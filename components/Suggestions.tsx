@@ -9,15 +9,13 @@ export function Suggestions({ suggestions }: SuggestionsProps) {
 
   return (
     <div className="suggestions">
-      <p>
-        Did you mean:{' '}
-        {suggestions.map((suggestion, i) => (
-          <span key={suggestion}>
-            <Link href={`/search?q=${encodeURIComponent(suggestion)}`}>{suggestion}</Link>
-            {i < suggestions.length - 1 ? ', ' : ''}
-          </span>
-        ))}
-      </p>
+      Did you mean:{' '}
+      {suggestions.map((suggestion, i) => (
+        <span key={suggestion}>
+          <Link href={`/search?q=${encodeURIComponent(suggestion)}`}>{suggestion}</Link>
+          {i < suggestions.length - 1 ? ', ' : ''}
+        </span>
+      ))}
     </div>
   );
 }
