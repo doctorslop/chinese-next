@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import ThemeToggle from '../components/ThemeToggle';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -16,7 +17,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}})()` }} />
+      </head>
       <body>
         <header className="site-header">
           <div className="header-inner">
@@ -30,6 +34,7 @@ export default function RootLayout({
             <nav className="header-nav">
               <Link href="/help">Help</Link>
               <Link href="/about">About</Link>
+              <ThemeToggle />
             </nav>
           </div>
         </header>
