@@ -17,7 +17,7 @@ export function Pagination({ query, page, hasNext, hasPrev }: PaginationProps) {
           href={`/search?q=${encodeURIComponent(query)}&page=${page - 1}`}
           className="page-link"
         >
-          &laquo; Previous
+          Previous
         </Link>
       )}
       <span className="page-info">Page {page}</span>
@@ -26,7 +26,7 @@ export function Pagination({ query, page, hasNext, hasPrev }: PaginationProps) {
           href={`/search?q=${encodeURIComponent(query)}&page=${page + 1}`}
           className="page-link"
         >
-          Next &raquo;
+          Next
         </Link>
       )}
     </div>

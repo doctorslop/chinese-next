@@ -26,6 +26,8 @@ next-env.d.ts
 
 # database
 dictionary.db
+dictionary.db-shm
+dictionary.db-wal
 
 # python artifacts
 __pycache__/

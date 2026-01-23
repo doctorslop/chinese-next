@@ -40,7 +40,7 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
   const params = await searchParams;
   const query = params.q || '';
   return {
-    title: query ? `Search: ${query} - ChineseDictionary` : 'Search - ChineseDictionary',
+    title: query ? `${query} - Chinese Dictionary` : 'Search - Chinese Dictionary',
   };
 }
 
@@ -48,17 +48,14 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;
   let query = (params.q || '').trim();
 
-  // Redirect to home if no query
   if (!query) {
     redirect('/');
   }
 
-  // Input validation - limit query length
   if (query.length > MAX_QUERY_LENGTH) {
     query = query.slice(0, MAX_QUERY_LENGTH);
   }
 
-  // Get page number (default to 1)
   let page = parseInt(params.page || '1', 10);
   if (isNaN(page) || page < 1) page = 1;
   if (page > MAX_PAGE) page = MAX_PAGE;
@@ -75,7 +72,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   let debugInfo: SearchDebugInfo | undefined = undefined;
 
   try {
-    // Perform search using SQL OFFSET/LIMIT - fetch one extra to detect next page
     const offset = (page - 1) * RESULTS_PER_PAGE;
     const searchResult = search(query, RESULTS_PER_PAGE + 1, offset, debugMode);
     const pageResults = searchResult.results;
@@ -83,14 +79,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
     hasNext = pageResults.length > RESULTS_PER_PAGE;
 
-    // Trim the extra result used for next-page detection
     const trimmedResults = hasNext ? pageResults.slice(0, RESULTS_PER_PAGE) : pageResults;
     totalResults = trimmedResults.length;
 
-    // Format results for display
     formattedResults = trimmedResults.map(formatEntry);
 
-    // Check if this is Chinese text that could be segmented
     const chineseChars = [...query].filter((c) => isChinese(c)).join('');
 
     if (totalResults === 0 && chineseChars.length > 1) {
@@ -103,7 +96,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       }
     }
 
-    // Get suggestions if no results or few results (and not segmented)
     if (totalResults < 5 && !segmentedResults) {
       suggestions = getSuggestions(query, 8);
       suggestions = suggestions.filter((s) => s.toLowerCase() !== query.toLowerCase());
@@ -117,7 +109,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     <div className="results-container">
       <SearchForm defaultValue={query} compact />
 
-      <h2 className="search-heading">Search: {query}</h2>
+      <p className="search-heading">
+        Results for <strong>{query}</strong>
+      </p>
 
       {errorMessage && (
         <div className="flash error">{errorMessage}</div>
@@ -133,7 +127,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       ) : segmentedResults ? (
         <SegmentedResults query={query} segments={segmentedResults} />
       ) : !errorMessage ? (
-        <p className="no-results">No results found for &quot;{query}&quot;.</p>
+        <p className="no-results">No results found for &quot;{query}&quot;</p>
       ) : null}
 
       {debugInfo && (
@@ -141,7 +135,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       )}
 
       <div className="back-link">
-        <Link href="/">&lt;&lt; back to the home page</Link>
+        <Link href="/">Home</Link>
       </div>
     </div>
   );

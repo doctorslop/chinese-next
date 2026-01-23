@@ -2,12 +2,12 @@ import Link from 'next/link';
 
 export default function NotFound() {
   return (
-    <div className="content-page">
-      <h1>Error</h1>
-      <p>Page not found</p>
-      <p>
-        <Link href="/">&lt;&lt; back to the home page</Link>
-      </p>
+    <div className="error-page">
+      <h1>Page not found</h1>
+      <p>The page you are looking for does not exist.</p>
+      <div className="back-link">
+        <Link href="/">Home</Link>
+      </div>
     </div>
   );
 }

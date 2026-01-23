@@ -20,15 +20,24 @@ export function EntryList({ results }: EntryListProps) {
 
   return (
     <div className="results-list">
-      {results.map((entry, index) => (
-        <div key={entry.id} className={`entry${index % 2 === 1 ? ' entry-alt' : ''}`}>
-          <span className="headword">{entry.headword}</span>
-          <span className="pinyin">
-            {entry.syllables.map(([pinyinNum, pinyinDisplay], i) => (
-              <AudioLink key={i} pinyinNum={pinyinNum} pinyinDisplay={pinyinDisplay} />
-            ))}
-          </span>
-          <span className="definition">{entry.definition}</span>
+      {results.map((entry) => (
+        <div key={entry.id} className="entry">
+          <div className="entry-field">
+            <div className="entry-label">Hanzi</div>
+            <div className="entry-value hanzi">{entry.headword}</div>
+          </div>
+          <div className="entry-field">
+            <div className="entry-label">Pinyin</div>
+            <div className="entry-value pinyin">
+              {entry.syllables.map(([pinyinNum, pinyinDisplay], i) => (
+                <AudioLink key={i} pinyinNum={pinyinNum} pinyinDisplay={pinyinDisplay} />
+              ))}
+            </div>
+          </div>
+          <div className="entry-field">
+            <div className="entry-label">English</div>
+            <div className="entry-value definition">{entry.definition}</div>
+          </div>
         </div>
       ))}
     </div>

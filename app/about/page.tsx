@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { getEntryCount, ensureInitialized } from '@/lib/db';
 
 export const metadata: Metadata = {
-  title: 'About - ChineseDictionary',
+  title: 'About - Chinese Dictionary',
 };
 
 export default function AboutPage() {
@@ -20,15 +20,15 @@ export default function AboutPage() {
 
   return (
     <div className="content-page">
-      <h1>About ChineseDictionary</h1>
+      <h1>About</h1>
 
       <p>
-        ChineseDictionary is a no-nonsense, easy to use Chinese-English dictionary created by
+        Chinese Dictionary is a no-nonsense, easy to use Chinese-English dictionary created by
         volunteers.
       </p>
 
       <p>
-        Our dictionary contains <strong>over {formattedCount} entries</strong>, covering a broad
+        The dictionary contains <strong>over {formattedCount} entries</strong>, covering a broad
         vocabulary of words, idioms, and single-character entries. The data includes both simplified
         and traditional Chinese forms.
       </p>
@@ -49,16 +49,8 @@ export default function AboutPage() {
         Chinese-English dictionary project maintained by the community.
       </p>
 
-      <h2>Design Philosophy</h2>
-      <p>
-        We focus on essential dictionary features: a single search bar for queries, clear bilingual
-        entries with tone-marked Pinyin and English definitions, and integrated Mandarin audio
-        pronunciation. The design is intentionally simple with no user accounts, no login, and
-        minimal distractions.
-      </p>
-
       <div className="back-link">
-        <Link href="/">&lt;&lt; back to the home page</Link>
+        <Link href="/">Home</Link>
       </div>
     </div>
   );

@@ -5,9 +5,10 @@ import { useRef, useEffect } from 'react';
 interface SearchFormProps {
   defaultValue?: string;
   small?: boolean;
+  compact?: boolean;
 }
 
-export function SearchForm({ defaultValue = '', small = false }: SearchFormProps) {
+export function SearchForm({ defaultValue = '', small = false, compact = false }: SearchFormProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -18,7 +19,7 @@ export function SearchForm({ defaultValue = '', small = false }: SearchFormProps
     <form
       action="/search"
       method="get"
-      className={small ? 'search-form search-form-small' : 'search-form'}
+      className={small || compact ? 'search-form-small' : 'search-form'}
     >
       <input
         ref={inputRef}
@@ -26,7 +27,7 @@ export function SearchForm({ defaultValue = '', small = false }: SearchFormProps
         name="q"
         className="search-input"
         defaultValue={defaultValue}
-        placeholder="Enter English, Chinese, or Pinyin..."
+        placeholder="English, Chinese, or Pinyin..."
       />
       <button type="submit" className="search-button">
         Search
