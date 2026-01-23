@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Search: {{ query }} - ChineseDictionary{% endblock %}
+
+{% block content %}
+<div class="results-container">
+    <form action="{{ url_for('search_results') }}" method="get" class="search-form search-form-small">
+        <input type="text" name="q" class="search-input" value="{{ query }}" autofocus>
+        <button type="submit" class="search-button">Search</button>
+    </form>
+
+    <h2 class="search-heading">Search: {{ query }}</h2>
+
+    {% if suggestions %}
+    <div class="suggestions">
+        <p>Did you mean:
+            {% for suggestion in suggestions %}
+            <a href="{{ url_for('search_results', q=suggestion) }}">{{ suggestion }}</a>{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+    </div>
+    {% endif %}
+
+    {% if results %}
+    <div class="results-list">
+        {% for entry in results %}
+        <div class="entry {% if loop.index is even %}entry-alt{% endif %}">
+            <span class="headword">{{ entry.headword }}</span>
+            <span class="pinyin">
+                {% for pinyin_num, pinyin_display in entry.syllables %}
+                <a href="#" class="pinyin-audio" data-audio="{{ url_for('static', filename='audio/' + get_audio_filename(pinyin_num)) }}">{{ pinyin_display }}</a>
+                {% endfor %}
+            </span>
+            <span class="definition">{{ entry.definition }}</span>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if has_prev or has_next %}
+    <div class="pagination">
+        {% if has_prev %}
+        <a href="{{ url_for('search_results', q=query, page=page-1) }}" class="page-link">&laquo; Previous</a>
+        {% endif %}
+        <span class="page-info">Page {{ page }}</span>
+        {% if has_next %}
+        <a href="{{ url_for('search_results', q=query, page=page+1) }}" class="page-link">Next &raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% elif segmented_results %}
+    <p class="breakdown-intro">Character breakdown for "{{ query }}":</p>
+    <div class="results-list breakdown-list">
+        {% for segment in segmented_results %}
+        <div class="breakdown-segment">
+            {% if segment.entries %}
+                {% for entry in segment.entries %}
+                <div class="entry">
+                    <span class="headword">{{ entry.headword }}</span>
+                    <span class="pinyin">
+                        {% for pinyin_num, pinyin_display in entry.syllables %}
+                        <a href="#" class="pinyin-audio" data-audio="{{ url_for('static', filename='audio/' + get_audio_filename(pinyin_num)) }}">{{ pinyin_display }}</a>
+                        {% endfor %}
+                    </span>
+                    <span class="definition">{{ entry.definition }}</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="entry entry-not-found">
+                    <span class="headword">{{ segment.word }}</span>
+                    <span class="definition">(not found in dictionary)</span>
+                </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="no-results">No results found for "{{ query }}".</p>
+    {% endif %}
+
+    <div class="back-link">
+        <a href="{{ url_for('home') }}">&lt;&lt; back to the home page</a>
+    </div>
+</div>
+{% endblock %}

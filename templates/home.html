@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}ChineseDictionary - Chinese-English Dictionary{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <h1 class="site-title">ChineseDictionary</h1>
+    <p class="tagline">Chinese-English Dictionary</p>
+
+    <form action="{{ url_for('search_results') }}" method="get" class="search-form">
+        <input type="text" name="q" class="search-input" placeholder="Enter English, Chinese, or Pinyin..." autofocus>
+        <button type="submit" class="search-button">Search</button>
+    </form>
+
+    <div class="examples">
+        <p>Try:</p>
+        <ul class="example-list">
+            {% for query, description in examples %}
+            <li>
+                <a href="{{ url_for('search_results', q=query) }}">{{ query }}</a>
+                <span class="example-desc">({{ description }})</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
