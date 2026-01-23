@@ -1,6 +1,6 @@
 # ChineseDictionary
 
-A minimalist Chinese-English dictionary web application, replicating the functionality of ChineseDictionary.cc.
+A minimalist Chinese-English dictionary web application built with Next.js (App Router).
 
 ## Features
 
@@ -15,56 +15,46 @@ A minimalist Chinese-English dictionary web application, replicating the functio
 - **Audio pronunciation**: Click any Pinyin syllable to hear it
 - **Both character sets**: Simplified and Traditional Chinese
 - **"Did you mean" suggestions**: Helpful when you mistype
+- **Debug mode**: Append `?debug=1` to see SQL, timing, and token info
 - **Clean, minimal design**: Fast loading, mobile-friendly
 
 ## Quick Start
 
 ### Prerequisites
 
-- Python 3.8+
-- pip
+- Node.js 18+
+- npm
 
 ### Installation
 
 1. Clone the repository:
    ```bash
    git clone <repository-url>
-   cd chinesedictionary
+   cd chinese-next
    ```
 
-2. Create a virtual environment (recommended):
+2. Install dependencies:
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   npm install
    ```
 
-3. Install dependencies:
+3. Download and import dictionary data:
    ```bash
-   pip install -r requirements.txt
+   # Place cedict_ts.u8 in data/ directory, then:
+   npm run import
    ```
+   This imports CC-CEDICT (~120,000 entries) into the SQLite database.
 
-4. Download and import dictionary data:
+4. Run the development server:
    ```bash
-   python scripts/import_cedict.py
-   ```
-   This will automatically download CC-CEDICT (~120,000 entries) and import it into the SQLite database.
-
-5. (Optional) Set up audio files:
-   ```bash
-   python scripts/generate_audio_manifest.py --create-placeholders
-   ```
-   Note: For actual audio, you'll need to provide MP3 files for each Pinyin syllable. See "Audio Setup" below.
-
-6. Run the application:
-   ```bash
-   python app.py
+   npm run dev
    ```
 
-7. Open http://localhost:5000 in your browser.
+5. Open http://localhost:3000 in your browser.
 
 ## Audio Setup
 
-The dictionary supports per-syllable audio pronunciation. Audio files should be placed in `static/audio/` with the naming convention:
+Audio files go in `public/audio/` with the naming convention:
 
 ```
 {syllable}{tone}.mp3
@@ -72,48 +62,82 @@ The dictionary supports per-syllable audio pronunciation. Audio files should be 
 
 Examples: `ni3.mp3`, `hao3.mp3`, `zhong1.mp3`
 
-Options for obtaining audio files:
-1. **TTS Generation**: Use a text-to-speech service to generate audio for each syllable
-2. **Existing Resources**: Some open-source Mandarin audio libraries exist
-3. **Record manually**: For highest quality, record native speaker pronunciations
-
-The `scripts/generate_audio_manifest.py` script creates a JSON manifest of all required files (~1300 syllable+tone combinations).
-
 ## Project Structure
 
 ```
-chinesedictionary/
-├── app.py                 # Flask application
-├── search.py              # Search engine with query parsing
-├── parser.py              # CC-CEDICT format parser
-├── database.py            # SQLite database operations
-├── pinyin_utils.py        # Pinyin conversion utilities
-├── static/
-│   ├── css/style.css      # Minimal stylesheet
-│   ├── js/audio.js        # Audio click handler
-│   └── audio/             # Pinyin audio files (MP3)
-├── templates/
-│   ├── base.html          # Base template with navigation
-│   ├── home.html          # Home page with search bar
-│   ├── results.html       # Search results display
-│   ├── help.html          # Search syntax documentation
-│   ├── about.html         # About page
-│   └── contact.html       # Contact form
+chinese-next/
+├── app/
+│   ├── layout.tsx             # Root layout with navigation
+│   ├── page.tsx               # Home page with search bar
+│   ├── globals.css            # All styles
+│   ├── not-found.tsx          # 404 page
+│   ├── error.tsx              # Error boundary
+│   ├── search/page.tsx        # Search results (Server Component)
+│   ├── help/page.tsx          # Search syntax help
+│   ├── about/page.tsx         # About page with entry count
+│   └── api/search/route.ts    # JSON API endpoint
+├── lib/
+│   ├── db.ts                  # SQLite database (better-sqlite3)
+│   ├── search.ts              # Search engine with query parsing
+│   ├── pinyin.ts              # Pinyin conversion utilities
+│   ├── parser.ts              # CC-CEDICT format parser
+│   └── constants.ts           # Shared configuration
+├── components/
+│   ├── SearchForm.tsx         # Search input (Client Component)
+│   ├── EntryList.tsx          # Dictionary entry display
+│   ├── AudioLink.tsx          # Pinyin audio click handler
+│   ├── Pagination.tsx         # Previous/Next page links
+│   ├── Suggestions.tsx        # "Did you mean" links
+│   ├── SegmentedResults.tsx   # Character breakdown display
+│   └── StatsPanel.tsx         # Debug info panel
 ├── scripts/
-│   ├── import_cedict.py   # Data import script
-│   └── generate_audio_manifest.py
+│   └── import-cedict.ts       # Data import script
+├── public/
+│   ├── audio.js               # Audio playback handler
+│   └── audio/                 # Pinyin MP3 files
 ├── data/
-│   └── cedict_ts.u8       # CC-CEDICT data (downloaded)
-├── dictionary.db          # SQLite database (generated)
-└── requirements.txt
+│   └── cedict_ts.u8           # CC-CEDICT data (downloaded)
+├── dictionary.db              # SQLite database (generated)
+├── next.config.js
+├── tsconfig.json
+└── package.json
 ```
+
+## Architecture
+
+### Server Components (default)
+
+All pages are Server Components that call `lib/search.ts` directly — no client-side fetch needed for initial render. This keeps the search logic server-side and sends only HTML to the client.
+
+### Client Components (minimal)
+
+Only used where browser APIs are required:
+- `SearchForm` — autofocus on the input
+- `AudioLink` — click handler for audio playback
+- `StatsPanel` — collapsible debug panel
+- `error.tsx` — Next.js error boundary (required)
+
+### Database
+
+SQLite with `better-sqlite3` (synchronous, no async overhead):
+- **Table**: `entries` with 7 columns
+- **Indexes**: `traditional`, `simplified`, `pinyin_search`, `pinyin_nospace`
+- **FTS5**: Virtual table for full-text search with sync triggers
+- **Pagination**: SQL `LIMIT/OFFSET` — no fetch-all-then-slice
+
+### Search Pipeline
+
+1. **Parse** query into tokens (field, exclude, wildcard, phrase)
+2. **Build** SQL WHERE clause with LIKE patterns
+3. **Order** by relevance (exact match first, then by length)
+4. **Paginate** with LIMIT+1 trick to detect next page
 
 ## Search Syntax
 
 ### Basic Search
-- `hello` - Search English definitions
-- `你好` - Search Chinese characters
-- `nihao` or `ni3hao3` - Search by Pinyin
+- `hello` — Search English definitions
+- `你好` — Search Chinese characters
+- `nihao` or `ni3hao3` — Search by Pinyin
 
 ### Advanced Operators
 
@@ -128,51 +152,38 @@ chinesedictionary/
 
 Operators can be combined: `c:好 e:good`, `e:"thank you"`, `-"to use"`
 
-## Configuration
+## API
 
-Environment variables:
-- `SECRET_KEY`: Flask secret key (set in production)
+### GET /api/search
 
-## Deployment
+JSON endpoint for programmatic access.
 
-### Production with Gunicorn
+**Parameters:**
+- `q` (required) — Search query (max 200 chars)
+- `page` (optional, default 1) — Page number (1–100)
+- `debug` (optional) — Set to `1` for SQL/timing info
+
+**Response:**
+```json
+{
+  "query": "hello",
+  "results": [...],
+  "result_count": 50,
+  "suggestions": [],
+  "segmented_results": null,
+  "page": 1,
+  "has_next": true,
+  "has_prev": false
+}
+```
+
+## Scripts
 
 ```bash
-pip install gunicorn
-gunicorn -w 4 -b 0.0.0.0:8000 app:app
-```
-
-### Docker
-
-```dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt gunicorn
-COPY . .
-RUN python scripts/import_cedict.py
-EXPOSE 8000
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "app:app"]
-```
-
-### Nginx (reverse proxy)
-
-```nginx
-server {
-    listen 80;
-    server_name dictionary.example.com;
-
-    location / {
-        proxy_pass http://127.0.0.1:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-
-    location /static {
-        alias /path/to/chinesedictionary/static;
-        expires 7d;
-    }
-}
+npm run dev       # Start development server
+npm run build     # Production build
+npm run start     # Start production server
+npm run import    # Import CC-CEDICT data
 ```
 
 ## Data Source
