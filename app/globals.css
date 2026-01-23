@@ -212,26 +212,35 @@ li {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .example-list li {
   display: flex;
   align-items: baseline;
-  gap: 12px;
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  margin-bottom: 2px;
-  transition: background 0.1s;
-}
-
-.example-list li:hover {
-  background: var(--subtle);
+  gap: 10px;
+  padding: 0;
 }
 
 .example-list li a {
-  font-weight: 500;
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, monospace;
+  font-size: 13px;
+  font-weight: 400;
   white-space: nowrap;
-  flex-shrink: 0;
+  text-decoration: none;
+  background: var(--subtle);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.example-list li a:hover {
+  background: var(--bg);
+  border-color: var(--border-strong);
+  text-decoration: none;
 }
 
 .example-desc {
@@ -668,9 +677,8 @@ li {
   }
 
   .example-list li {
-    flex-direction: column;
-    gap: 2px;
-    padding: 8px 12px;
+    flex-wrap: wrap;
+    gap: 4px 10px;
   }
 
   h1 {

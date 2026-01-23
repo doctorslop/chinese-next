@@ -15,12 +15,12 @@ export default function HomePage() {
       <SearchForm />
 
       <div className="examples">
-        <p className="examples-label">Examples</p>
+        <p className="examples-label">Example queries</p>
         <ul className="example-list">
           {EXAMPLE_QUERIES.map(([query, description]) => (
             <li key={query}>
               <Link href={`/search?q=${encodeURIComponent(query)}`}>{query}</Link>
-              <span className="example-desc">{description}</span>
+              <span className="example-desc">&mdash; {description}</span>
             </li>
           ))}
         </ul>
