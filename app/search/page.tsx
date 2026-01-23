@@ -8,10 +8,12 @@ import { EntryList, type FormattedEntry } from '@/components/EntryList';
 import { Pagination } from '@/components/Pagination';
 import { Suggestions } from '@/components/Suggestions';
 import { SegmentedResults } from '@/components/SegmentedResults';
+import { StatsPanel } from '@/components/StatsPanel';
 import Link from 'next/link';
+import type { SearchDebugInfo } from '@/lib/search';
 
 interface SearchPageProps {
-  searchParams: Promise<{ q?: string; page?: string }>;
+  searchParams: Promise<{ q?: string; page?: string; debug?: string }>;
 }
 
 function formatEntry(entry: {
@@ -61,6 +63,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   if (isNaN(page) || page < 1) page = 1;
   if (page > MAX_PAGE) page = MAX_PAGE;
 
+  const debugMode = params.debug === '1';
+
   let formattedResults: FormattedEntry[] = [];
   let suggestions: string[] = [];
   let segmentedResults: { word: string; entries: FormattedEntry[] }[] | null = null;
@@ -68,11 +72,14 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   let hasPrev = page > 1;
   let totalResults = 0;
   let errorMessage: string | null = null;
+  let debugInfo: SearchDebugInfo | undefined = undefined;
 
   try {
     // Perform search using SQL OFFSET/LIMIT - fetch one extra to detect next page
     const offset = (page - 1) * RESULTS_PER_PAGE;
-    const { results: pageResults } = search(query, RESULTS_PER_PAGE + 1, offset);
+    const searchResult = search(query, RESULTS_PER_PAGE + 1, offset, debugMode);
+    const pageResults = searchResult.results;
+    debugInfo = searchResult.debugInfo;
 
     hasNext = pageResults.length > RESULTS_PER_PAGE;
 
@@ -128,6 +135,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       ) : !errorMessage ? (
         <p className="no-results">No results found for &quot;{query}&quot;.</p>
       ) : null}
+
+      {debugInfo && (
+        <StatsPanel debugInfo={debugInfo} resultCount={totalResults} page={page} />
+      )}
 
       <div className="back-link">
         <Link href="/">&lt;&lt; back to the home page</Link>
