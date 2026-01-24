@@ -686,16 +686,36 @@ li {
   text-decoration: none;
 }
 
+/* Tablet */
+@media (max-width: 768px) {
+  .home-container {
+    padding: 36px 0 20px;
+  }
+
+  .tagline {
+    margin-bottom: 24px;
+  }
+
+  .examples {
+    margin-top: 24px;
+    max-width: 480px;
+  }
+
+  .content-page h1 {
+    margin-bottom: 12px;
+  }
+}
+
 /* Mobile */
 @media (max-width: 600px) {
   :root {
-    --px: 12px;
-    --control-h: 48px;
+    --px: 16px;
+    --control-h: 44px;
   }
 
   .header-inner {
     height: 48px;
-    gap: 16px;
+    gap: 12px;
   }
 
   .header-logo span {
@@ -703,7 +723,7 @@ li {
   }
 
   .header-nav {
-    gap: 12px;
+    gap: 10px;
   }
 
   .header-nav a {
@@ -723,13 +743,26 @@ li {
   }
 
   .home-container {
-    padding: 32px 0 16px;
+    padding: 24px 0 16px;
+  }
+
+  .site-logo {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 12px;
   }
 
   .site-title {
-    font-size: 24px;
+    font-size: 22px;
+    margin-bottom: 2px;
   }
 
+  .tagline {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  /* Search form: consistent sizing */
   .search-form,
   .search-form-small {
     max-width: 100%;
@@ -737,34 +770,64 @@ li {
 
   .search-input {
     min-width: 0;
+    height: var(--control-h);
+    font-size: 16px; /* prevents iOS zoom on focus */
   }
 
   .search-button {
-    padding: 0 16px;
+    height: var(--control-h);
+    padding: 0 18px;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  /* Examples: match search form width */
+  .examples {
+    margin-top: 20px;
+    max-width: 100%;
+  }
+
+  .examples-label {
+    font-size: 12px;
+    margin-bottom: 10px;
   }
 
   .example-grid {
-    grid-template-columns: 1fr;
-    max-width: 280px;
-    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
   }
 
   .example-card {
-    flex-direction: row;
-    justify-content: center;
-    gap: 8px;
-    padding: 14px 16px;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 10px 8px;
   }
 
+  .example-query {
+    font-size: 12px;
+  }
+
+  .example-desc {
+    font-size: 11px;
+  }
+
+  /* Typography */
   h1 {
     font-size: 20px;
   }
 
   h2 {
     font-size: 16px;
+    margin: 20px 0 6px;
   }
 
+  h3 {
+    font-size: 14px;
+  }
+
+  /* Dictionary entries */
   .entry {
     grid-template-columns: 64px 1fr;
   }
@@ -782,9 +845,92 @@ li {
   .entry-value.hanzi {
     font-size: 20px;
   }
+
+  /* Content pages */
+  .content-page p {
+    font-size: 14px;
+  }
+
+  .content-page li {
+    font-size: 14px;
+  }
+
+  .content-page code {
+    font-size: 12px;
+  }
+
+  /* Search results page */
+  .search-form-small {
+    margin-bottom: 16px;
+  }
+
+  .search-heading {
+    font-size: 13px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+  }
+
+  /* Pagination */
+  .pagination {
+    gap: 8px;
+    padding: 12px 0;
+  }
+
+  .page-link {
+    height: 36px;
+    padding: 0 14px;
+    font-size: 13px;
+  }
 }
 
+/* Narrow mobile: stack search form */
+@media (max-width: 400px) {
+  .search-form,
+  .search-form-small {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .search-form .search-input,
+  .search-form .search-button,
+  .search-form-small .search-input,
+  .search-form-small .search-button {
+    width: 100%;
+  }
+
+  .search-form .search-button,
+  .search-form-small .search-button {
+    height: 42px;
+  }
+
+  .example-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .example-card {
+    padding: 9px 6px;
+  }
+
+  .example-query {
+    font-size: 11px;
+  }
+
+  .example-desc {
+    font-size: 10px;
+  }
+}
+
+/* Very narrow mobile */
 @media (max-width: 360px) {
+  :root {
+    --px: 12px;
+  }
+
+  .header-logo span {
+    font-size: 13px;
+  }
+
   .entry {
     grid-template-columns: 56px 1fr;
   }
@@ -793,5 +939,9 @@ li {
     font-size: 9px;
     padding: 6px 6px;
     min-width: 56px;
+  }
+
+  .site-title {
+    font-size: 20px;
   }
 }
