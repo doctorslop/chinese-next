@@ -11,6 +11,7 @@
 
 import { getDatabase, ensureInitialized, type DictEntry } from './db';
 import { normalizePinyinInput, isChinese, isPinyin } from './pinyin';
+import { MAX_TOKENS } from './constants';
 
 interface SearchToken {
   term: string;
@@ -46,7 +47,7 @@ function parseQuery(query: string): SearchToken[] {
   const pattern = /(-)?(?:(c:|p:|e:))?(?:"([^"]+)"|(\S+))/g;
 
   let match: RegExpExecArray | null;
-  while ((match = pattern.exec(query)) !== null) {
+  while ((match = pattern.exec(query)) !== null && tokens.length < MAX_TOKENS) {
     const exclude = Boolean(match[1]);
     const fieldPrefix = match[2] || null;
     const phrase = match[3] || null;

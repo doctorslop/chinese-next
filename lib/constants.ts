@@ -1,6 +1,7 @@
 export const RESULTS_PER_PAGE = 50;
 export const MAX_QUERY_LENGTH = 200;
 export const MAX_PAGE = 100;
+export const MAX_TOKENS = 20;
 
 export const EXAMPLE_QUERIES: [string, string][] = [
   ['hello', 'English word'],
