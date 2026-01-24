@@ -3,13 +3,40 @@
  * GET /api/search?q=...&page=...&debug=1
  *
  * Returns JSON matching the same data shape the search page uses.
- * Optional debug=1 param returns SQL and timing info.
+ * Optional debug=1 param returns SQL and timing info (non-production only).
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { search, getSuggestions, segmentChinese } from '@/lib/search';
-import { extractPinyinSyllables, getAudioFilename, isChinese } from '@/lib/pinyin';
+import { extractPinyinSyllables, isChinese } from '@/lib/pinyin';
 import { RESULTS_PER_PAGE, MAX_QUERY_LENGTH, MAX_PAGE } from '@/lib/constants';
+
+// Simple in-memory rate limiter: max requests per window per IP
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 60;
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+  entry.count++;
+  return entry.count > RATE_LIMIT_MAX;
+}
+
+// Periodic cleanup to prevent memory leak (every 5 minutes)
+const _cleanupInterval = setInterval(() => {
+  const now = Date.now();
+  for (const [ip, entry] of rateLimitMap) {
+    if (now > entry.resetAt) rateLimitMap.delete(ip);
+  }
+}, 5 * 60_000);
+if (typeof _cleanupInterval === 'object' && 'unref' in _cleanupInterval) {
+  _cleanupInterval.unref();
+}
 
 interface FormattedEntry {
   id: number;
@@ -43,9 +70,18 @@ function formatEntry(entry: {
 }
 
 export async function GET(request: NextRequest) {
+  // Rate limiting by IP
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  if (isRateLimited(ip)) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429 }
+    );
+  }
+
   const searchParams = request.nextUrl.searchParams;
   let query = (searchParams.get('q') || '').trim();
-  const debugMode = searchParams.get('debug') === '1';
+  const debugMode = searchParams.get('debug') === '1' && process.env.NODE_ENV !== 'production';
 
   if (!query) {
     return NextResponse.json({ results: [], query: '', result_count: 0 });

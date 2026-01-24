@@ -60,7 +60,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   if (isNaN(page) || page < 1) page = 1;
   if (page > MAX_PAGE) page = MAX_PAGE;
 
-  const debugMode = params.debug === '1';
+  const debugMode = params.debug === '1' && process.env.NODE_ENV !== 'production';
 
   let formattedResults: FormattedEntry[] = [];
   let suggestions: string[] = [];
