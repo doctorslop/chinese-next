@@ -1,13 +1,26 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
 import ThemeToggle from '../components/ThemeToggle';
 import './globals.css';
 
+export const viewport: Viewport = {
+  themeColor: '#111111',
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   title: 'Chinese Dictionary',
   description: 'Chinese-English Dictionary',
+  manifest: '/manifest.json',
   icons: {
     icon: '/icon.svg',
+    apple: '/apple-touch-icon.png',
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Chinese Dictionary',
   },
 };
 
@@ -39,6 +52,7 @@ export default function RootLayout({
         </header>
         <main>{children}</main>
         <script src="/audio.js" defer></script>
+        <script dangerouslySetInnerHTML={{ __html: `if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js')})}` }} />
       </body>
     </html>
   );
