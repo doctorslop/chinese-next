@@ -16,14 +16,18 @@ export default function HomePage() {
 
       <div className="examples">
         <p className="examples-label">Example queries</p>
-        <ul className="example-list">
+        <div className="example-grid">
           {EXAMPLE_QUERIES.map(([query, description]) => (
-            <li key={query}>
-              <Link href={`/search?q=${encodeURIComponent(query)}`}>{query}</Link>
-              <span className="example-desc">&mdash; {description}</span>
-            </li>
+            <Link
+              key={query}
+              href={`/search?q=${encodeURIComponent(query)}`}
+              className="example-card"
+            >
+              <span className="example-query">{query}</span>
+              <span className="example-desc">{description}</span>
+            </Link>
           ))}
-        </ul>
+        </div>
       </div>
     </div>
   );
