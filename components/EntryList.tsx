@@ -30,7 +30,7 @@ export function EntryList({ results }: EntryListProps) {
             <div className="entry-label">Pinyin</div>
             <div className="entry-value pinyin">
               {entry.syllables.map(([pinyinNum, pinyinDisplay], i) => (
-                <AudioLink key={i} pinyinNum={pinyinNum} pinyinDisplay={pinyinDisplay} />
+                <AudioLink key={`${entry.id}-${pinyinNum}-${i}`} pinyinNum={pinyinNum} pinyinDisplay={pinyinDisplay} />
               ))}
             </div>
           </div>

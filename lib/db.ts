@@ -121,15 +121,6 @@ export function getEntryCount(): number {
 }
 
 /**
- * Get a single entry by ID.
- */
-export function getEntryById(entryId: number): DictEntry | null {
-  const db = getDatabase();
-  const row = db.prepare('SELECT * FROM entries WHERE id = ?').get(entryId) as DictEntry | undefined;
-  return row ?? null;
-}
-
-/**
  * Import CC-CEDICT data into the database.
  */
 export function importEntries(

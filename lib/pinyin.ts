@@ -127,33 +127,6 @@ export function toneNumberToMark(syllable: string): string {
 }
 
 /**
- * Convert a pinyin syllable with tone marks to tone numbers.
- * E.g., 'nǐ' -> 'ni3', 'lǜ' -> 'lv4'
- */
-export function toneMarkToNumber(syllable: string): string {
-  const result: string[] = [];
-  let tone = 5;
-
-  for (const char of syllable) {
-    if (char in TONE_MARK_TO_NUMBER) {
-      const [vowel, t] = TONE_MARK_TO_NUMBER[char];
-      result.push(vowel);
-      if (t < 5) {
-        tone = t;
-      }
-    } else {
-      result.push(char);
-    }
-  }
-
-  const base = result.join('').replace(/ü/g, 'v');
-  if (tone < 5) {
-    return base + tone.toString();
-  }
-  return base;
-}
-
-/**
  * Convert full pinyin string with tone numbers to display format.
  * E.g., 'ni3 hao3' -> 'nǐ hǎo'
  */

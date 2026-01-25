@@ -58,21 +58,3 @@ export function parseCedictLine(line: string): CedictEntry | null {
     definition,
   };
 }
-
-/**
- * Parse an entire CC-CEDICT file content.
- * Returns array of entries.
- */
-export function parseCedictContent(content: string): CedictEntry[] {
-  const entries: CedictEntry[] = [];
-  const lines = content.split('\n');
-
-  for (const line of lines) {
-    const entry = parseCedictLine(line);
-    if (entry) {
-      entries.push(entry);
-    }
-  }
-
-  return entries;
-}

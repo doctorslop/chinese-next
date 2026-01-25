@@ -34,8 +34,8 @@
     function handlePinyinClick(event) {
         var target = event.target;
 
-        // Check if clicked element is a pinyin audio link
-        if (target.classList.contains('pinyin-audio')) {
+        // Check if target exists and has classList before accessing
+        if (target && target.classList && target.classList.contains('pinyin-audio')) {
             event.preventDefault();
 
             var audioUrl = target.getAttribute('data-audio');
@@ -51,7 +51,8 @@
     // Also handle touch events for mobile
     document.addEventListener('touchend', function(event) {
         var target = event.target;
-        if (target.classList.contains('pinyin-audio')) {
+        // Check if target exists and has classList before accessing
+        if (target && target.classList && target.classList.contains('pinyin-audio')) {
             event.preventDefault();
             var audioUrl = target.getAttribute('data-audio');
             if (audioUrl) {

@@ -4,11 +4,10 @@ import { useRef, useEffect } from 'react';
 
 interface SearchFormProps {
   defaultValue?: string;
-  small?: boolean;
   compact?: boolean;
 }
 
-export function SearchForm({ defaultValue = '', small = false, compact = false }: SearchFormProps) {
+export function SearchForm({ defaultValue = '', compact = false }: SearchFormProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -19,7 +18,7 @@ export function SearchForm({ defaultValue = '', small = false, compact = false }
     <form
       action="/search"
       method="get"
-      className={small || compact ? 'search-form-small' : 'search-form'}
+      className={compact ? 'search-form-small' : 'search-form'}
     >
       <input
         ref={inputRef}

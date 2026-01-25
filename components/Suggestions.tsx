@@ -11,7 +11,7 @@ export function Suggestions({ suggestions }: SuggestionsProps) {
     <div className="suggestions">
       Did you mean:{' '}
       {suggestions.map((suggestion, i) => (
-        <span key={suggestion}>
+        <span key={`${suggestion}-${i}`}>
           <Link href={`/search?q=${encodeURIComponent(suggestion)}`}>{suggestion}</Link>
           {i < suggestions.length - 1 ? ', ' : ''}
         </span>

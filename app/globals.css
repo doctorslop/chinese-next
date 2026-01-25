@@ -160,10 +160,6 @@ a:hover {
   flex-shrink: 0;
 }
 
-.theme-toggle-label {
-  display: none;
-}
-
 main {
   max-width: var(--max-w);
   margin: 0 auto;
@@ -515,8 +511,12 @@ li {
   font-weight: 500;
 }
 
-/* Audio links */
+/* Audio links (button element) */
 .pinyin-audio {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
   color: var(--fg);
   text-decoration: underline;
   text-decoration-style: dotted;
@@ -527,6 +527,11 @@ li {
 
 .pinyin-audio:hover {
   text-decoration-style: solid;
+}
+
+.pinyin-audio:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
 }
 
 /* Character breakdown */
