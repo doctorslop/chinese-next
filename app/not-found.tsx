@@ -5,9 +5,9 @@ export default function NotFound() {
     <div className="error-page">
       <h1>Page not found</h1>
       <p>The page you are looking for does not exist.</p>
-      <div className="back-link">
-        <Link href="/">Home</Link>
-      </div>
+      <Link href="/" className="search-button">
+        Home
+      </Link>
     </div>
   );
 }
