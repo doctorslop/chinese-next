@@ -221,58 +221,52 @@ li {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 48px 0 24px;
+  padding: 40px 0 24px;
 }
 
 .site-logo {
-  width: 48px;
-  height: 48px;
-  margin-bottom: 16px;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 14px;
 }
 
 .site-title {
   font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.03em;
-  margin-bottom: 4px;
-}
-
-.tagline {
-  font-size: 15px;
-  color: var(--muted);
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .examples {
   width: 100%;
-  max-width: 600px;
+  max-width: 520px;
   text-align: left;
-  margin-top: 32px;
+  margin-top: 28px;
 }
 
 .examples-label {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   color: var(--muted);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   text-align: center;
 }
 
 .example-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 8px;
 }
 
 .example-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 12px 10px;
-  border-radius: var(--radius);
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--subtle);
   text-decoration: none;
@@ -311,7 +305,7 @@ li {
   display: flex;
   align-items: center;
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
   gap: 8px;
 }
 
@@ -351,7 +345,7 @@ li {
 
 .search-button {
   height: var(--control-h);
-  padding: 0 20px;
+  padding: 0 18px;
   font-size: 14px;
   font-weight: 600;
   line-height: 1.2;
@@ -705,11 +699,11 @@ li {
 /* Tablet */
 @media (max-width: 768px) {
   .home-container {
-    padding: 36px 0 20px;
+    padding: 32px 0 20px;
   }
 
-  .tagline {
-    margin-bottom: 24px;
+  .site-title {
+    margin-bottom: 20px;
   }
 
   .examples {
@@ -763,19 +757,14 @@ li {
   }
 
   .site-logo {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 12px;
+    width: 36px;
+    height: 36px;
+    margin-bottom: 10px;
   }
 
   .site-title {
     font-size: 22px;
-    margin-bottom: 2px;
-  }
-
-  .tagline {
-    font-size: 14px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
 
   /* Search form: consistent sizing */
@@ -804,21 +793,21 @@ li {
   }
 
   .examples-label {
-    font-size: 12px;
-    margin-bottom: 10px;
+    font-size: 10px;
+    margin-bottom: 8px;
   }
 
   .example-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 6px;
   }
 
   .example-card {
     flex-direction: column;
     align-items: center;
-    gap: 3px;
-    padding: 10px 8px;
+    gap: 2px;
+    padding: 7px 8px;
   }
 
   .example-query {
@@ -922,11 +911,11 @@ li {
 
   .example-grid {
     grid-template-columns: 1fr 1fr;
-    gap: 6px;
+    gap: 5px;
   }
 
   .example-card {
-    padding: 9px 6px;
+    padding: 6px 6px;
   }
 
   .example-query {
