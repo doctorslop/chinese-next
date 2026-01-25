@@ -1,4 +1,5 @@
 import { AudioLink } from './AudioLink';
+import { CopyButton } from './CopyButton';
 
 export interface FormattedEntry {
   id: number;
@@ -24,7 +25,10 @@ export function EntryList({ results }: EntryListProps) {
         <div key={entry.id} className="entry">
           <div className="entry-field">
             <div className="entry-label">Hanzi</div>
-            <div className="entry-value hanzi">{entry.headword}</div>
+            <div className="entry-value hanzi">
+              <span className="hanzi-text">{entry.headword}</span>
+              <CopyButton text={entry.headword} />
+            </div>
           </div>
           <div className="entry-field">
             <div className="entry-label">Pinyin</div>

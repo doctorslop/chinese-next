@@ -1,4 +1,5 @@
 import { AudioLink } from './AudioLink';
+import { CopyButton } from './CopyButton';
 import type { FormattedEntry } from './EntryList';
 
 interface SegmentedResultsProps {
@@ -23,7 +24,10 @@ export function SegmentedResults({ query, segments }: SegmentedResultsProps) {
                 <div key={entry.id} className="entry">
                   <div className="entry-field">
                     <div className="entry-label">Hanzi</div>
-                    <div className="entry-value hanzi">{entry.headword}</div>
+                    <div className="entry-value hanzi">
+                      <span className="hanzi-text">{entry.headword}</span>
+                      <CopyButton text={entry.headword} />
+                    </div>
                   </div>
                   <div className="entry-field">
                     <div className="entry-label">Pinyin</div>
@@ -43,7 +47,10 @@ export function SegmentedResults({ query, segments }: SegmentedResultsProps) {
               <div className="entry entry-not-found">
                 <div className="entry-field">
                   <div className="entry-label">Hanzi</div>
-                  <div className="entry-value hanzi">{segment.word}</div>
+                  <div className="entry-value hanzi">
+                    <span className="hanzi-text">{segment.word}</span>
+                    <CopyButton text={segment.word} />
+                  </div>
                 </div>
                 <div className="entry-field">
                   <div className="entry-label">English</div>
