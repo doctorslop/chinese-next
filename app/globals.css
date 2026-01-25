@@ -322,7 +322,7 @@ li {
   height: var(--control-h);
   padding: 0 14px;
   font-size: 15px;
-  line-height: 1.2;
+  line-height: normal;
   border: 1.5px solid var(--border-strong);
   border-radius: var(--radius);
   background: var(--bg);
@@ -344,11 +344,14 @@ li {
 }
 
 .search-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   height: var(--control-h);
   padding: 0 18px;
   font-size: 14px;
   font-weight: 600;
-  line-height: 1.2;
+  line-height: 1;
   border: 1.5px solid transparent;
   border-radius: var(--radius);
   background: var(--fg);
