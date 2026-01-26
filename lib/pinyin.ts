@@ -128,13 +128,14 @@ export function toneNumberToMark(syllable: string): string {
 
 /**
  * Convert a pinyin syllable with tone marks to tone numbers.
- * E.g., 'nǐ' -> 'ni3', 'lǜ' -> 'lv4'
+ * E.g., 'nǐ' -> 'ni3', 'lǜ' -> 'lv4', 'Ā' -> 'a1'
  */
 export function toneMarkToNumber(syllable: string): string {
   const result: string[] = [];
   let tone = 5;
 
-  for (const char of syllable) {
+  // Lowercase to handle capitalized pinyin (e.g., HSK 7-9 data)
+  for (const char of syllable.toLowerCase()) {
     if (char in TONE_MARK_TO_NUMBER) {
       const [vowel, t] = TONE_MARK_TO_NUMBER[char];
       result.push(vowel);
