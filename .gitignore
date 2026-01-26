@@ -34,3 +34,4 @@ __pycache__/
 *.pyc
 *.pyo
 venv/
+public/audio/*.mp3
