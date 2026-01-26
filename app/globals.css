@@ -980,3 +980,366 @@ li {
     font-size: 20px;
   }
 }
+
+/* ===== HSK Flashcards ===== */
+
+/* HSK Level Selector */
+.hsk-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 0;
+}
+
+.hsk-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 8px;
+}
+
+.hsk-subtitle {
+  color: var(--muted);
+  font-size: 15px;
+  margin-bottom: 32px;
+}
+
+.hsk-levels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 480px;
+  margin-bottom: 40px;
+}
+
+.hsk-level-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 20px 16px;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.hsk-level-card:hover {
+  border-color: var(--fg);
+  background: var(--subtle);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hsk-level-number {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.hsk-level-description {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.hsk-level-words {
+  font-size: 11px;
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+.hsk-info {
+  width: 100%;
+  max-width: 400px;
+  text-align: left;
+  padding: 20px;
+  background: var(--subtle);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.hsk-info h2 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+.hsk-info ul {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.hsk-info li {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  display: flex;
+  gap: 8px;
+}
+
+.hsk-info code {
+  font-size: 11px;
+  padding: 2px 6px;
+  background: var(--bg);
+}
+
+/* HSK Study Page */
+.hsk-study-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: calc(100vh - 180px);
+  padding: 0;
+}
+
+.hsk-study-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.hsk-back-link {
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.hsk-back-link:hover {
+  color: var(--fg);
+}
+
+.hsk-study-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.hsk-progress {
+  font-size: 14px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.hsk-loading,
+.hsk-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 48px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+/* Flashcard */
+.flashcard-wrapper {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 400px;
+  height: 280px;
+  cursor: pointer;
+  margin-bottom: 24px;
+}
+
+.flashcard {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+}
+
+.flashcard.flipped {
+  transform: rotateY(180deg);
+}
+
+.flashcard-front,
+.flashcard-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  border-radius: var(--radius);
+  border: 2px solid var(--border);
+  background: var(--bg);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.flashcard-back {
+  transform: rotateY(180deg);
+}
+
+.flashcard-chinese {
+  font-size: 72px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+}
+
+.flashcard-pinyin {
+  font-size: 28px;
+  color: var(--fg);
+  margin-bottom: 12px;
+}
+
+.flashcard-english {
+  font-size: 18px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.flashcard-audio-btn {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: var(--subtle);
+  border-radius: 50%;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.flashcard-audio-btn:hover {
+  background: var(--border);
+  color: var(--fg);
+}
+
+/* Controls */
+.hsk-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.hsk-control-btn {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  border-radius: 50%;
+  color: var(--fg);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.hsk-control-btn:hover {
+  border-color: var(--fg);
+  background: var(--subtle);
+}
+
+.hsk-control-btn.active {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+
+.hsk-shortcuts-hint {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.hsk-shortcuts-hint span {
+  opacity: 0.7;
+}
+
+/* HSK Mobile */
+@media (max-width: 600px) {
+  .hsk-levels {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .hsk-level-card {
+    padding: 16px 12px;
+  }
+
+  .hsk-level-number {
+    font-size: 16px;
+  }
+
+  .hsk-info {
+    padding: 16px;
+  }
+
+  .hsk-study-header {
+    margin-bottom: 20px;
+  }
+
+  .flashcard-wrapper {
+    height: 240px;
+  }
+
+  .flashcard-chinese {
+    font-size: 56px;
+  }
+
+  .flashcard-pinyin {
+    font-size: 24px;
+  }
+
+  .flashcard-english {
+    font-size: 16px;
+  }
+
+  .hsk-controls {
+    gap: 12px;
+  }
+
+  .hsk-control-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .hsk-shortcuts-hint {
+    display: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .hsk-title {
+    font-size: 24px;
+  }
+
+  .flashcard-wrapper {
+    height: 220px;
+  }
+
+  .flashcard-chinese {
+    font-size: 48px;
+  }
+
+  .flashcard-pinyin {
+    font-size: 20px;
+  }
+
+  .flashcard-english {
+    font-size: 14px;
+  }
+}
