@@ -6,7 +6,7 @@ interface PageProps {
   params: { level: string };
 }
 
-const VALID_LEVELS = ['1', '2', '3', '4', '5', '6'];
+const VALID_LEVELS = ['1', '2', '3', '4', '5', '6', '7-9'];
 
 export function generateMetadata({ params }: PageProps): Metadata {
   if (!VALID_LEVELS.includes(params.level)) {

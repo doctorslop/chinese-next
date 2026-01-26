@@ -8,6 +8,22 @@ interface FlashcardStudyProps {
   level: string;
 }
 
+interface HSKWord {
+  traditional: string;
+  simplified: string;
+  pinyin: string;
+  pinyinNumbered: string;
+  english: string;
+}
+
+interface HSKData {
+  metadata: {
+    identifier: string;
+    count: number;
+  };
+  words: HSKWord[];
+}
+
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -16,6 +32,8 @@ function shuffleArray<T>(array: T[]): T[] {
   }
   return shuffled;
 }
+
+const VALID_LEVELS = ['1', '2', '3', '4', '5', '6', '7-9'];
 
 export function FlashcardStudy({ level }: FlashcardStudyProps) {
   const [cards, setCards] = useState<FlashcardData[]>([]);
@@ -27,31 +45,26 @@ export function FlashcardStudy({ level }: FlashcardStudyProps) {
   const [error, setError] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Load cards from CSV
+  // Load cards from JSON
   useEffect(() => {
-    const validLevels = ['1', '2', '3', '4', '5', '6'];
-    if (!validLevels.includes(level)) {
-      setError('Invalid HSK level. Please choose 1-6.');
+    if (!VALID_LEVELS.includes(level)) {
+      setError('Invalid HSK level.');
       setIsLoading(false);
       return;
     }
 
-    fetch(`/data/hsk${level}.csv`)
+    fetch(`/data/hsk${level}.json`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to load vocabulary');
-        return res.text();
+        return res.json() as Promise<HSKData>;
       })
-      .then((text) => {
-        const lines = text.trim().split('\n');
-        const parsed: FlashcardData[] = lines
-          .map((line) => {
-            const [chinese, pinyin, ...englishParts] = line.split(',');
-            return {
-              chinese: chinese?.trim() || '',
-              pinyin: pinyin?.trim() || '',
-              english: englishParts.join(',').trim() || '',
-            };
-          })
+      .then((data) => {
+        const parsed: FlashcardData[] = data.words
+          .map((word) => ({
+            chinese: word.simplified,
+            pinyin: word.pinyin,
+            english: word.english,
+          }))
           .filter((card) => card.chinese && card.pinyin);
 
         setCards(parsed);
@@ -200,7 +213,7 @@ export function FlashcardStudy({ level }: FlashcardStudyProps) {
         </Link>
         <h1 className="hsk-study-title">HSK {level}</h1>
         <div className="hsk-progress">
-          {currentIndex + 1} / {displayCards.length}
+          {currentIndex + 1} / {displayCards.length.toLocaleString()}
         </div>
       </div>
 

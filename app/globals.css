@@ -1034,6 +1034,10 @@ li {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+.hsk-level-card-wide {
+  grid-column: span 3;
+}
+
 .hsk-level-number {
   font-size: 18px;
   font-weight: 700;
@@ -1278,6 +1282,10 @@ li {
 
   .hsk-level-card {
     padding: 16px 12px;
+  }
+
+  .hsk-level-card-wide {
+    grid-column: span 2;
   }
 
   .hsk-level-number {
