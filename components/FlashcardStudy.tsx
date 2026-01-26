@@ -112,7 +112,7 @@ export function FlashcardStudy({ level }: FlashcardStudyProps) {
       audioRef.current.pause();
     }
 
-    // Play each syllable sequentially
+    // Play each syllable sequentially with pause between
     let index = 0;
     const playNext = () => {
       if (index < urls.length) {
@@ -120,15 +120,16 @@ export function FlashcardStudy({ level }: FlashcardStudyProps) {
         audioRef.current = audio;
         audio.onended = () => {
           index++;
-          setTimeout(playNext, 100);
+          // 300ms pause between syllables for clear separation
+          setTimeout(playNext, 300);
         };
         audio.onerror = () => {
           index++;
-          playNext();
+          setTimeout(playNext, 100);
         };
         audio.play().catch(() => {
           index++;
-          playNext();
+          setTimeout(playNext, 100);
         });
       }
     };
