@@ -1,12 +1,10 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  // Use standalone output for production deployments
+import type { NextConfig } from 'next';
+
+const nextConfig: NextConfig = {
   output: 'standalone',
-  // Disable image optimization (not needed for this app)
   images: {
     unoptimized: true,
   },
-  // Security headers
   async headers() {
     return [
       {
@@ -21,4 +19,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
