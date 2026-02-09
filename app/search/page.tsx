@@ -66,7 +66,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   let suggestions: string[] = [];
   let segmentedResults: { word: string; entries: FormattedEntry[] }[] | null = null;
   let hasNext = false;
-  let hasPrev = page > 1;
+  const hasPrev = page > 1;
   let totalResults = 0;
   let errorMessage: string | null = null;
   let debugInfo: SearchDebugInfo | undefined = undefined;
