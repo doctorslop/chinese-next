@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
+import { addToSearchHistory } from './SearchHistory';
 
 interface SearchFormProps {
   defaultValue?: string;
@@ -15,11 +16,19 @@ export function SearchForm({ defaultValue = '', small = false, compact = false }
     inputRef.current?.focus();
   }, []);
 
+  const handleSubmit = () => {
+    const value = inputRef.current?.value?.trim();
+    if (value) {
+      addToSearchHistory(value);
+    }
+  };
+
   return (
     <form
       action="/search"
       method="get"
       className={small || compact ? 'search-form-small' : 'search-form'}
+      onSubmit={handleSubmit}
     >
       <input
         ref={inputRef}

@@ -258,23 +258,27 @@ export function search(
     if (!token.exclude) {
       const term = token.term.replace(/\*/g, '');
       if (token.field === 'pinyin' || isPinyin(term)) {
-        // For pinyin: exact match first, then by length (shorter = more relevant)
+        // For pinyin: exact match first, then by frequency, then by length
         const normalized = normalizePinyinInput(term).replace(/ /g, '');
         orderClauses.push('CASE WHEN pinyin_nospace = ? THEN 0 ELSE 1 END');
         orderParams.push(normalized);
+        orderClauses.push('frequency DESC');
         orderClauses.push('LENGTH(pinyin_search)');
       } else if (token.field === 'chinese' || isChinese(term)) {
-        // For Chinese: exact match first, then by length
+        // For Chinese: exact match first, then by frequency, then by length
         orderClauses.push('CASE WHEN traditional = ? OR simplified = ? THEN 0 ELSE 1 END');
         orderParams.push(term, term);
+        orderClauses.push('frequency DESC');
         orderClauses.push('LENGTH(traditional)');
       } else if (token.field === 'english') {
-        // For English: entries starting with term first, then by definition length
+        // For English: entries starting with term first, then by frequency
         orderClauses.push('CASE WHEN definition LIKE ? THEN 0 WHEN definition LIKE ? THEN 1 ELSE 2 END');
         orderParams.push(`${term}%`, `% ${term}%`);
+        orderClauses.push('frequency DESC');
         orderClauses.push('LENGTH(definition)');
       } else {
-        // Auto-detected: prioritize shorter entries (usually more common)
+        // Auto-detected: prioritize by frequency, then shorter entries
+        orderClauses.push('frequency DESC');
         orderClauses.push('LENGTH(traditional)');
       }
       break; // Only use first include token for ordering
@@ -282,6 +286,7 @@ export function search(
   }
 
   if (orderClauses.length === 0) {
+    orderClauses.push('frequency DESC');
     orderClauses.push('traditional');
   }
 

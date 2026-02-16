@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { EXAMPLE_QUERIES } from '@/lib/constants';
 import { SearchForm } from '@/components/SearchForm';
+import { SearchHistory } from '@/components/SearchHistory';
 
 export default function HomePage() {
   return (
@@ -11,6 +12,8 @@ export default function HomePage() {
       <h1 className="site-title">Chinese Dictionary</h1>
 
       <SearchForm />
+
+      <SearchHistory />
 
       <div className="examples">
         <p className="examples-label">Example queries</p>
