@@ -982,7 +982,7 @@ li {
   }
 
   /* Stroke order: smaller on mobile */
-  .stroke-order-canvas :global(svg) {
+  .stroke-order-canvas svg {
     width: 80px !important;
     height: 80px !important;
   }
@@ -1490,5 +1490,142 @@ li {
 
   .flashcard-english {
     font-size: 14px;
+  }
+}
+
+/* Debug / Status page */
+.debug-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.debug-summary[data-status="ok"] {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.debug-summary[data-status="warn"] {
+  background: #fffbeb;
+  border-color: #fcd34d;
+}
+
+.debug-summary[data-status="error"] {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+[data-theme="dark"] .debug-summary[data-status="ok"] {
+  background: #052e16;
+  border-color: #166534;
+}
+
+[data-theme="dark"] .debug-summary[data-status="warn"] {
+  background: #422006;
+  border-color: #854d0e;
+}
+
+[data-theme="dark"] .debug-summary[data-status="error"] {
+  background: #450a0a;
+  border-color: #991b1b;
+}
+
+.debug-summary-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.debug-summary-text {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.debug-summary-counts {
+  font-size: 13px;
+  color: var(--muted);
+  margin-left: auto;
+}
+
+.debug-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.debug-table thead th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  padding: 6px 10px;
+  border-bottom: 2px solid var(--border);
+}
+
+.debug-table tbody tr {
+  border-bottom: 1px solid var(--border);
+}
+
+.debug-table td {
+  padding: 8px 10px;
+  vertical-align: top;
+}
+
+.debug-icon {
+  width: 28px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.debug-name {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.debug-detail {
+  color: var(--muted);
+  word-break: break-word;
+}
+
+.debug-metric-key {
+  font-weight: 500;
+  white-space: nowrap;
+  width: 180px;
+}
+
+.debug-metric-value {
+  color: var(--muted);
+  word-break: break-all;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+}
+
+.debug-footer {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 32px;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+@media (max-width: 600px) {
+  .debug-summary-counts {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .debug-name {
+    white-space: normal;
+  }
+
+  .debug-metric-key {
+    width: auto;
   }
 }
