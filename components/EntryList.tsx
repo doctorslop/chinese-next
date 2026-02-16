@@ -1,4 +1,6 @@
 import { AudioLink } from './AudioLink';
+import { StrokeOrder } from './StrokeOrder';
+import { ChineseLink } from './ChineseLink';
 
 export interface FormattedEntry {
   id: number;
@@ -24,7 +26,14 @@ export function EntryList({ results }: EntryListProps) {
         <div key={entry.id} className="entry">
           <div className="entry-field">
             <div className="entry-label">Hanzi</div>
-            <div className="entry-value hanzi">{entry.headword}</div>
+            <div className="entry-value hanzi">
+              <span>{entry.headword}</span>
+              <div className="entry-strokes">
+                {[...entry.headword].map((char, i) => (
+                  <StrokeOrder key={`${entry.id}-${char}-${i}`} character={char} />
+                ))}
+              </div>
+            </div>
           </div>
           <div className="entry-field">
             <div className="entry-label">Pinyin</div>
@@ -36,7 +45,9 @@ export function EntryList({ results }: EntryListProps) {
           </div>
           <div className="entry-field">
             <div className="entry-label">English</div>
-            <div className="entry-value definition">{entry.definition}</div>
+            <div className="entry-value definition">
+              <ChineseLink text={entry.definition} />
+            </div>
           </div>
         </div>
       ))}

@@ -43,7 +43,8 @@ export function initDatabase(): void {
       pinyin_display TEXT NOT NULL,
       pinyin_search TEXT NOT NULL,
       pinyin_nospace TEXT NOT NULL DEFAULT '',
-      definition TEXT NOT NULL
+      definition TEXT NOT NULL,
+      frequency INTEGER NOT NULL DEFAULT 0
     )
   `);
 
@@ -62,6 +63,13 @@ export function initDatabase(): void {
 
   // Populate pinyin_nospace for any rows that haven't been filled yet
   db.exec("UPDATE entries SET pinyin_nospace = REPLACE(pinyin_search, ' ', '') WHERE pinyin_nospace = ''");
+
+  // Migrate existing databases: add frequency column if missing
+  try {
+    db.prepare('SELECT frequency FROM entries LIMIT 1').get();
+  } catch {
+    db.exec('ALTER TABLE entries ADD COLUMN frequency INTEGER NOT NULL DEFAULT 0');
+  }
 
   // FTS5 virtual table for full-text search
   db.exec(`
@@ -109,6 +117,7 @@ export interface DictEntry {
   pinyin_search: string;
   pinyin_nospace: string;
   definition: string;
+  frequency: number;
 }
 
 /**
@@ -131,6 +140,7 @@ export function getEntryById(entryId: number): DictEntry | null {
 
 /**
  * Import CC-CEDICT data into the database.
+ * Optionally accepts a frequency map (word -> count) to populate the frequency column.
  */
 export function importEntries(
   entries: Array<{
@@ -141,7 +151,8 @@ export function importEntries(
     pinyin_search: string;
     definition: string;
   }>,
-  batchSize: number = 10000
+  batchSize: number = 10000,
+  frequencyMap?: Map<string, number>
 ): number {
   const db = getDatabase();
 
@@ -150,8 +161,8 @@ export function importEntries(
   db.exec('DELETE FROM entries_fts');
 
   const insert = db.prepare(`
-    INSERT INTO entries (traditional, simplified, pinyin, pinyin_display, pinyin_search, pinyin_nospace, definition)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO entries (traditional, simplified, pinyin, pinyin_display, pinyin_search, pinyin_nospace, definition, frequency)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   let count = 0;
@@ -159,6 +170,7 @@ export function importEntries(
   const insertBatch = db.transaction((batch: typeof entries) => {
     for (const entry of batch) {
       const pinyinNospace = entry.pinyin_search.replace(/ /g, '');
+      const freq = frequencyMap?.get(entry.simplified) ?? frequencyMap?.get(entry.traditional) ?? 0;
       insert.run(
         entry.traditional,
         entry.simplified,
@@ -166,7 +178,8 @@ export function importEntries(
         entry.pinyin_display,
         entry.pinyin_search,
         pinyinNospace,
-        entry.definition
+        entry.definition,
+        freq
       );
     }
   });
