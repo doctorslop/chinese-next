@@ -13,6 +13,49 @@ import { getDatabase, ensureInitialized, type DictEntry } from './db';
 import { normalizePinyinInput, isChinese, isPinyin } from './pinyin';
 import { MAX_TOKENS } from './constants';
 
+/**
+ * Merge consecutive unfielded pinyin tokens into a single token.
+ * Without this, "ni3 hao3" becomes two AND conditions that can never
+ * both match pinyin_nospace (a string can't start with both "ni" and "hao").
+ */
+function mergePinyinTokens(tokens: SearchToken[]): SearchToken[] {
+  const result: SearchToken[] = [];
+  let pinyinBuffer: SearchToken[] = [];
+
+  function flush() {
+    if (pinyinBuffer.length > 1) {
+      result.push({
+        term: pinyinBuffer.map((t) => t.term).join(' '),
+        field: null,
+        exclude: false,
+        wildcard: false,
+        phrase: false,
+      });
+    } else if (pinyinBuffer.length === 1) {
+      result.push(pinyinBuffer[0]);
+    }
+    pinyinBuffer = [];
+  }
+
+  for (const token of tokens) {
+    if (
+      !token.exclude &&
+      !token.field &&
+      !token.wildcard &&
+      !token.phrase &&
+      isPinyin(token.term)
+    ) {
+      pinyinBuffer.push(token);
+    } else {
+      flush();
+      result.push(token);
+    }
+  }
+  flush();
+
+  return result;
+}
+
 interface SearchToken {
   term: string;
   field: 'chinese' | 'pinyin' | 'english' | null;
@@ -212,7 +255,7 @@ export function search(
   ensureInitialized();
 
   const parseStart = performance.now();
-  const tokens = parseQuery(query);
+  const tokens = mergePinyinTokens(parseQuery(query));
   const parseTime = performance.now() - parseStart;
 
   if (tokens.length === 0) {
