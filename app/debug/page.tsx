@@ -79,12 +79,13 @@ function runChecks(): { checks: Check[]; dbMetrics: Record<string, string | numb
   // 7. FTS5 index
   try {
     const db = getDatabase();
-    const ftsCount = db.prepare('SELECT COUNT(*) as c FROM entries_fts').get() as { c: number };
-    dbMetrics['FTS index rows'] = ftsCount.c.toLocaleString('en-US');
+    const row = db.prepare('SELECT COUNT(*) as c FROM entries_fts').get() as { c: number } | undefined;
+    const ftsCount = row?.c ?? 0;
+    dbMetrics['FTS index rows'] = ftsCount.toLocaleString('en-US');
     checks.push({
       name: 'FTS5 search index',
-      status: ftsCount.c > 0 ? 'ok' : 'error',
-      detail: `${ftsCount.c.toLocaleString('en-US')} indexed rows`,
+      status: ftsCount > 0 ? 'ok' : 'error',
+      detail: `${ftsCount.toLocaleString('en-US')} indexed rows`,
     });
   } catch (e) {
     checks.push({ name: 'FTS5 search index', status: 'error', detail: String(e) });
@@ -93,12 +94,13 @@ function runChecks(): { checks: Check[]; dbMetrics: Record<string, string | numb
   // 8. Frequency data populated
   try {
     const db = getDatabase();
-    const freqRow = db.prepare('SELECT COUNT(*) as c FROM entries WHERE frequency > 0').get() as { c: number };
-    dbMetrics['Entries with frequency'] = freqRow.c.toLocaleString('en-US');
+    const row = db.prepare('SELECT COUNT(*) as c FROM entries WHERE frequency > 0').get() as { c: number } | undefined;
+    const freqCount = row?.c ?? 0;
+    dbMetrics['Entries with frequency'] = freqCount.toLocaleString('en-US');
     checks.push({
       name: 'Frequency data',
-      status: freqRow.c > 0 ? 'ok' : 'warn',
-      detail: freqRow.c > 0 ? `${freqRow.c.toLocaleString('en-US')} entries have frequency data` : 'No frequency data — run import with zh_cn_freq.txt',
+      status: freqCount > 0 ? 'ok' : 'warn',
+      detail: freqCount > 0 ? `${freqCount.toLocaleString('en-US')} entries have frequency data` : 'No frequency data — run import with zh_cn_freq.txt',
     });
   } catch (e) {
     checks.push({ name: 'Frequency data', status: 'error', detail: String(e) });
@@ -165,11 +167,12 @@ function runChecks(): { checks: Check[]; dbMetrics: Record<string, string | numb
   // 11. Database size
   try {
     const db = getDatabase();
-    const pageCount = db.pragma('page_count') as { page_count: number }[];
-    const pageSize = db.pragma('page_size') as { page_size: number }[];
-    if (pageCount.length && pageSize.length) {
-      const sizeBytes = pageCount[0].page_count * pageSize[0].page_size;
-      const sizeMB = (sizeBytes / (1024 * 1024)).toFixed(1);
+    const pageCountRows = db.pragma('page_count') as Record<string, number>[];
+    const pageSizeRows = db.pragma('page_size') as Record<string, number>[];
+    const pc = pageCountRows?.[0] ? Object.values(pageCountRows[0])[0] : 0;
+    const ps = pageSizeRows?.[0] ? Object.values(pageSizeRows[0])[0] : 0;
+    if (pc && ps) {
+      const sizeMB = ((pc * ps) / (1024 * 1024)).toFixed(1);
       dbMetrics['Database size'] = `${sizeMB} MB`;
     }
   } catch {

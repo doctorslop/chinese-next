@@ -23,20 +23,26 @@ function loadFrequencyMap(): Map<string, number> {
   console.log('Loading word frequency data...');
   const content = fs.readFileSync(FREQ_PATH, 'utf-8');
   const lines = content.split('\n');
+  let skipped = 0;
 
   for (const line of lines) {
     const trimmed = line.trim();
     if (!trimmed) continue;
     const spaceIdx = trimmed.lastIndexOf(' ');
-    if (spaceIdx === -1) continue;
+    if (spaceIdx === -1) { skipped++; continue; }
     const word = trimmed.slice(0, spaceIdx);
     const count = parseInt(trimmed.slice(spaceIdx + 1), 10);
     if (word && !isNaN(count)) {
       freqMap.set(word, count);
+    } else {
+      skipped++;
     }
   }
 
   console.log(`Loaded frequency data for ${freqMap.size} words.`);
+  if (skipped > 0) {
+    console.warn(`Warning: ${skipped} malformed lines skipped in frequency file.`);
+  }
   return freqMap;
 }
 
