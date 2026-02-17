@@ -6,57 +6,31 @@
 (function() {
     'use strict';
 
-    // Current audio element for cleanup
     var currentAudio = null;
 
-    /**
-     * Play audio for a pinyin syllable.
-     * @param {string} audioUrl - URL to the audio file
-     */
     function playAudio(audioUrl) {
-        // Stop any currently playing audio
         if (currentAudio) {
             currentAudio.pause();
             currentAudio = null;
         }
 
-        // Create and play new audio
         currentAudio = new Audio(audioUrl);
-        currentAudio.play().catch(function(e) {
+        currentAudio.play().catch(function() {
             // Audio file may not exist - fail silently
-            console.log('Audio not available:', audioUrl);
         });
     }
 
-    /**
-     * Handle click on pinyin audio links.
-     */
-    function handlePinyinClick(event) {
+    // Event delegation - walk up from target to find .pinyin-audio
+    document.addEventListener('click', function(event) {
         var target = event.target;
-
-        // Check if clicked element is a pinyin audio link
-        if (target.classList.contains('pinyin-audio')) {
-            event.preventDefault();
-
-            var audioUrl = target.getAttribute('data-audio');
-            if (audioUrl) {
-                playAudio(audioUrl);
+        while (target && target !== document.body) {
+            if (target.classList && target.classList.contains('pinyin-audio')) {
+                event.preventDefault();
+                var audioUrl = target.getAttribute('data-audio');
+                if (audioUrl) playAudio(audioUrl);
+                return;
             }
-        }
-    }
-
-    // Attach event listener using event delegation
-    document.addEventListener('click', handlePinyinClick);
-
-    // Also handle touch events for mobile
-    document.addEventListener('touchend', function(event) {
-        var target = event.target;
-        if (target.classList.contains('pinyin-audio')) {
-            event.preventDefault();
-            var audioUrl = target.getAttribute('data-audio');
-            if (audioUrl) {
-                playAudio(audioUrl);
-            }
+            target = target.parentElement;
         }
     });
 })();

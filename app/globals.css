@@ -646,7 +646,7 @@ li {
   font-weight: 500;
 }
 
-/* Audio links */
+/* Audio buttons (styled as inline text) */
 .pinyin-audio {
   color: var(--fg);
   text-decoration: underline;
@@ -654,6 +654,12 @@ li {
   text-underline-offset: 3px;
   cursor: pointer;
   margin-right: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: inherit;
+  line-height: inherit;
 }
 
 .pinyin-audio:hover {

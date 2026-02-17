@@ -14,12 +14,29 @@ import { RESULTS_PER_PAGE, MAX_QUERY_LENGTH, MAX_PAGE } from '@/lib/constants';
 // Simple in-memory rate limiter: max requests per window per IP
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 60;
+const RATE_LIMIT_MAP_MAX = 10_000;
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+function evictExpired(): void {
+  const now = Date.now();
+  for (const [ip, entry] of rateLimitMap) {
+    if (now > entry.resetAt) rateLimitMap.delete(ip);
+  }
+}
 
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
   const entry = rateLimitMap.get(ip);
   if (!entry || now > entry.resetAt) {
+    // Evict expired entries if map is getting large
+    if (rateLimitMap.size >= RATE_LIMIT_MAP_MAX) {
+      evictExpired();
+      // If still at capacity after eviction, drop the oldest
+      if (rateLimitMap.size >= RATE_LIMIT_MAP_MAX) {
+        const firstKey = rateLimitMap.keys().next().value;
+        if (firstKey !== undefined) rateLimitMap.delete(firstKey);
+      }
+    }
     rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
     return false;
   }
@@ -27,13 +44,8 @@ function isRateLimited(ip: string): boolean {
   return entry.count > RATE_LIMIT_MAX;
 }
 
-// Periodic cleanup to prevent memory leak (every 5 minutes)
-const _cleanupInterval = setInterval(() => {
-  const now = Date.now();
-  for (const [ip, entry] of rateLimitMap) {
-    if (now > entry.resetAt) rateLimitMap.delete(ip);
-  }
-}, 5 * 60_000);
+// Periodic cleanup (every 2 minutes)
+const _cleanupInterval = setInterval(evictExpired, 2 * 60_000);
 if (typeof _cleanupInterval === 'object' && 'unref' in _cleanupInterval) {
   _cleanupInterval.unref();
 }

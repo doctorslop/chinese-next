@@ -61,7 +61,7 @@ export function toneNumberToMark(syllable: string): string {
   syllable = syllable.toLowerCase().replace(/v/g, 'ü');
 
   // Extract tone number
-  const match = syllable.match(/^([a-züü]+)([1-5])?$/);
+  const match = syllable.match(/^([a-zü]+)([1-5])?$/);
   if (!match) {
     return syllable;
   }

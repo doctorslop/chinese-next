@@ -10,16 +10,17 @@ interface StrokeOrderProps {
 export function StrokeOrder({ character }: StrokeOrderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const writerRef = useRef<HanziWriter | null>(null);
-  const hasDataRef = useRef(true);
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
-    // Clear previous content
-    el.innerHTML = '';
+    // Reset visibility in case a previous load hid the container
+    el.style.display = '';
+    while (el.firstChild) el.removeChild(el.firstChild);
     writerRef.current = null;
-    hasDataRef.current = true;
+
+    let cancelled = false;
 
     try {
       const writer = HanziWriter.create(el, character, {
@@ -33,26 +34,37 @@ export function StrokeOrder({ character }: StrokeOrderProps) {
         strokeAnimationSpeed: 1,
         delayBetweenStrokes: 200,
         charDataLoader: (char: string) => {
-          return fetch(`https://cdn.jsdelivr.net/npm/hanzi-writer-data@2/${char}.json`)
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 8000);
+
+          return fetch(
+            `https://cdn.jsdelivr.net/npm/hanzi-writer-data@2/${char}.json`,
+            { signal: controller.signal }
+          )
             .then((res) => {
+              clearTimeout(timeout);
               if (!res.ok) throw new Error('not found');
               return res.json();
             })
+            .then((data) => {
+              if (cancelled) return null;
+              return data;
+            })
             .catch(() => {
-              hasDataRef.current = false;
-              if (el) el.style.display = 'none';
+              clearTimeout(timeout);
+              if (!cancelled && el) el.style.display = 'none';
               return null;
             });
         },
       });
       writerRef.current = writer;
     } catch {
-      hasDataRef.current = false;
       el.style.display = 'none';
     }
 
     return () => {
-      el.innerHTML = '';
+      cancelled = true;
+      while (el.firstChild) el.removeChild(el.firstChild);
       writerRef.current = null;
     };
   }, [character]);

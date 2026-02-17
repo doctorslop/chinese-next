@@ -10,12 +10,12 @@ interface AudioLinkProps {
 export function AudioLink({ pinyinNum, pinyinDisplay }: AudioLinkProps) {
   const audioFile = getAudioFilename(pinyinNum);
   return (
-    <a
-      href="#"
+    <button
+      type="button"
       className="pinyin-audio"
       data-audio={`/audio/${audioFile}`}
     >
       {pinyinDisplay}
-    </a>
+    </button>
   );
 }
