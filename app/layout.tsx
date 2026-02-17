@@ -44,6 +44,8 @@ export default function RootLayout({
               <span>Chinese Dictionary</span>
             </Link>
             <nav className="header-nav">
+              <Link href="/idioms">Idioms</Link>
+              <Link href="/lookup">Lookup</Link>
               <Link href="/hsk">HSK</Link>
               <Link href="/help">Help</Link>
               <Link href="/about">About</Link>

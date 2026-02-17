@@ -85,6 +85,40 @@ export default function HelpPage() {
         Click on any Pinyin syllable in the search results to hear its pronunciation.
       </p>
 
+      <h2>Word Frequency</h2>
+      <p>
+        Search results display a frequency tag next to entries that appear in the OpenSubtitles
+        corpus. This helps you focus on words that are commonly used in everyday Chinese:
+      </p>
+      <ul>
+        <li><strong>Very common</strong> &mdash; 100k+ occurrences (core vocabulary)</li>
+        <li><strong>Common</strong> &mdash; 10k&ndash;100k occurrences</li>
+        <li><strong>Moderate</strong> &mdash; 1k&ndash;10k occurrences</li>
+        <li><strong>Uncommon</strong> &mdash; fewer than 1k occurrences</li>
+      </ul>
+
+      <h2>Example Sentences &amp; Compound Words</h2>
+      <p>
+        When you search for a Chinese word, the results page shows example sentences
+        (for common words) and compound words that contain the searched term. This helps
+        you see how the word is used in context.
+      </p>
+
+      <h2>Idiom Browser</h2>
+      <p>
+        The <Link href="/idioms">Idioms</Link> page lets you browse and search Chinese
+        idioms (&#x6210;&#x8BED; / ch&eacute;ngy&#x1D4;). Click any idiom to see a
+        character-by-character breakdown showing how each character contributes to the
+        overall meaning.
+      </p>
+
+      <h2>Word-by-Word Lookup</h2>
+      <p>
+        The <Link href="/lookup">Lookup</Link> page lets you paste Chinese text and get
+        a word-by-word annotation with pinyin and English definitions. This is useful for
+        reading Chinese articles, messages, or any text you encounter.
+      </p>
+
       <div className="back-link">
         <Link href="/">Home</Link>
       </div>

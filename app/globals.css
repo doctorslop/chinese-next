@@ -603,6 +603,152 @@ li {
   text-decoration-thickness: 2px;
 }
 
+/* Traditional variant */
+.entry-traditional {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* Frequency tag */
+.freq-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 100px;
+  background: var(--subtle);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  cursor: help;
+}
+
+.freq-tag.freq-very-common {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.freq-tag.freq-common {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #1e40af;
+}
+
+.freq-tag.freq-moderate {
+  background: #fefce8;
+  border-color: #fde047;
+  color: #854d0e;
+}
+
+[data-theme="dark"] .freq-tag.freq-very-common {
+  background: #052e16;
+  border-color: #166534;
+  color: #86efac;
+}
+
+[data-theme="dark"] .freq-tag.freq-common {
+  background: #172554;
+  border-color: #1e40af;
+  color: #93c5fd;
+}
+
+[data-theme="dark"] .freq-tag.freq-moderate {
+  background: #422006;
+  border-color: #854d0e;
+  color: #fde047;
+}
+
+/* Example sentences & compound words */
+.examples-section {
+  margin-bottom: 20px;
+  padding: 14px;
+  background: var(--subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.examples-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.example-sentence {
+  margin-bottom: 8px;
+}
+
+.example-sentence:last-child {
+  margin-bottom: 0;
+}
+
+.example-zh {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.example-en {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.compound-words {
+  margin-top: 12px;
+}
+
+.example-sentences + .compound-words {
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.compound-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.compound-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 3px 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  text-decoration: none;
+  font-size: 13px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.compound-item:hover {
+  border-color: var(--border-strong);
+  text-decoration: none;
+}
+
+.compound-word {
+  font-weight: 500;
+  color: var(--fg);
+}
+
+.compound-pinyin {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.compound-def {
+  color: var(--muted);
+  font-size: 11px;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* No results */
 .no-results {
   text-align: center;
@@ -1496,6 +1642,315 @@ li {
 
   .flashcard-english {
     font-size: 14px;
+  }
+}
+
+/* ===== Idioms page ===== */
+
+.idiom-zh-title {
+  font-weight: 400;
+  font-size: 20px;
+  color: var(--muted);
+}
+
+.idiom-subtitle {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.idiom-breakdown-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 20px;
+  background: var(--subtle);
+}
+
+.idiom-breakdown-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.idiom-breakdown-word {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.idiom-breakdown-trad {
+  font-size: 16px;
+  color: var(--muted);
+}
+
+.idiom-breakdown-pinyin {
+  font-size: 15px;
+}
+
+.idiom-breakdown-def {
+  font-size: 14px;
+  color: var(--fg);
+  opacity: 0.85;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.idiom-breakdown-chars {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.idiom-breakdown-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.idiom-char-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.idiom-char-row:last-child {
+  border-bottom: none;
+}
+
+.idiom-char {
+  font-size: 22px;
+  font-weight: 500;
+  min-width: 32px;
+  text-decoration: none;
+}
+
+.idiom-char:hover {
+  text-decoration: underline;
+}
+
+.idiom-char-pinyin {
+  font-size: 14px;
+  color: var(--muted);
+  min-width: 50px;
+}
+
+.idiom-char-def {
+  font-size: 13px;
+  color: var(--fg);
+  opacity: 0.8;
+  line-height: 1.4;
+}
+
+.idiom-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.idiom-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.idiom-card:hover {
+  background: var(--subtle);
+  border-color: var(--border-strong);
+  text-decoration: none;
+}
+
+.idiom-card-word {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--fg);
+  letter-spacing: 0.04em;
+}
+
+.idiom-card-pinyin {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.idiom-card-def {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+@media (max-width: 600px) {
+  .idiom-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 6px;
+  }
+
+  .idiom-card {
+    padding: 10px 12px;
+  }
+
+  .idiom-card-word {
+    font-size: 18px;
+  }
+
+  .idiom-breakdown-word {
+    font-size: 24px;
+  }
+}
+
+/* ===== Word-by-word lookup ===== */
+
+.lookup-container {
+  padding: 0;
+}
+
+.lookup-subtitle {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.lookup-input-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.lookup-textarea {
+  flex: 1;
+  min-height: 80px;
+  padding: 10px 14px;
+  font-size: 18px;
+  line-height: 1.6;
+  font-family: inherit;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--fg);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.lookup-textarea:focus {
+  border-color: var(--fg);
+  box-shadow: 0 0 0 1px var(--fg);
+}
+
+.lookup-textarea::placeholder {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.lookup-submit {
+  align-self: flex-start;
+}
+
+.lookup-source {
+  font-size: 16px;
+  line-height: 1.8;
+  padding: 12px 16px;
+  background: var(--subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+}
+
+.lookup-word-link {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  cursor: pointer;
+  transition: text-decoration-style 0.15s, background 0.15s;
+  padding: 1px 0;
+  border-radius: 2px;
+}
+
+.lookup-word-link:hover {
+  text-decoration-style: solid;
+  background: var(--border);
+}
+
+.lookup-results {
+  margin-bottom: 24px;
+}
+
+.lookup-word-entry {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 0 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: baseline;
+}
+
+.lookup-word-entry:last-child {
+  border-bottom: none;
+}
+
+.lookup-word-zh {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.lookup-word-py {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.lookup-word-en {
+  font-size: 13px;
+  color: var(--fg);
+  opacity: 0.85;
+  line-height: 1.4;
+}
+
+.lookup-word-unknown {
+  grid-column: 1 / -1;
+  font-size: 16px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+@media (max-width: 600px) {
+  .lookup-textarea {
+    font-size: 16px;
+    min-height: 60px;
+  }
+
+  .lookup-word-entry {
+    grid-template-columns: auto 1fr;
+    gap: 2px 10px;
+  }
+
+  .lookup-word-py {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .lookup-word-en {
+    grid-column: 1 / -1;
+  }
+
+  .lookup-word-zh {
+    font-size: 18px;
   }
 }
 

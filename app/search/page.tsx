@@ -3,11 +3,13 @@ import { Metadata } from 'next';
 import { search, getSuggestions, segmentChinese } from '@/lib/search';
 import { extractPinyinSyllables, isChinese } from '@/lib/pinyin';
 import { RESULTS_PER_PAGE, MAX_QUERY_LENGTH, MAX_PAGE } from '@/lib/constants';
+import { findCompoundWords, getExampleSentences, type ExampleSentence, type ExampleUsage } from '@/lib/examples';
 import { SearchForm } from '@/components/SearchForm';
 import { EntryList, type FormattedEntry } from '@/components/EntryList';
 import { Pagination } from '@/components/Pagination';
 import { Suggestions } from '@/components/Suggestions';
 import { SegmentedResults } from '@/components/SegmentedResults';
+import { ExampleSentences } from '@/components/ExampleSentences';
 import { StatsPanel } from '@/components/StatsPanel';
 import Link from 'next/link';
 import type { SearchDebugInfo } from '@/lib/search';
@@ -23,6 +25,7 @@ function formatEntry(entry: {
   pinyin: string;
   pinyin_display: string;
   definition: string;
+  frequency: number;
 }): FormattedEntry {
   return {
     id: entry.id,
@@ -33,6 +36,7 @@ function formatEntry(entry: {
     pinyin_display: entry.pinyin_display,
     syllables: extractPinyinSyllables(entry.pinyin),
     definition: entry.definition,
+    frequency: entry.frequency,
   };
 }
 
@@ -70,6 +74,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   let totalResults = 0;
   let errorMessage: string | null = null;
   let debugInfo: SearchDebugInfo | undefined = undefined;
+  let exampleSentences: ExampleSentence[] = [];
+  let compoundWords: ExampleUsage[] = [];
 
   try {
     const offset = (page - 1) * RESULTS_PER_PAGE;
@@ -100,6 +106,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       suggestions = getSuggestions(query, 8);
       suggestions = suggestions.filter((s) => s.toLowerCase() !== query.toLowerCase());
     }
+
+    // Show example sentences and compound words for Chinese queries on page 1
+    if (page === 1 && totalResults > 0 && isChinese(query)) {
+      exampleSentences = getExampleSentences(query);
+      compoundWords = findCompoundWords(query, 8);
+    }
   } catch (e) {
     console.error(`Search error for query '${query}':`, e);
     errorMessage = 'An error occurred while searching. Please try again.';
@@ -122,6 +134,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       {formattedResults.length > 0 ? (
         <>
           <EntryList results={formattedResults} />
+          {(exampleSentences.length > 0 || compoundWords.length > 0) && (
+            <ExampleSentences word={query} sentences={exampleSentences} compounds={compoundWords} />
+          )}
           <Pagination query={query} page={page} hasNext={hasNext} hasPrev={hasPrev} />
         </>
       ) : segmentedResults ? (
