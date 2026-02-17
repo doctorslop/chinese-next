@@ -46,15 +46,17 @@ export function EntryList({ results }: EntryListProps) {
             <div className="entry-field">
               <div className="entry-label">Hanzi</div>
               <div className="entry-value hanzi">
-                <span>{entry.headword}</span>
-                {entry.traditional !== entry.simplified && (
-                  <span className="entry-traditional">{entry.traditional}</span>
-                )}
-                {freqLabel && (
-                  <span className={`freq-tag freq-${freqRank?.replace(' ', '-')}`} title={`Frequency: ${entry.frequency.toLocaleString()} (${freqRank})`}>
-                    {freqLabel}
-                  </span>
-                )}
+                <div className="hanzi-header">
+                  <span>{entry.headword}</span>
+                  {entry.traditional !== entry.simplified && (
+                    <span className="entry-traditional">{entry.traditional}</span>
+                  )}
+                  {freqLabel && (
+                    <span className={`freq-tag freq-${freqRank?.replace(' ', '-')}`} title={`Frequency: ${entry.frequency.toLocaleString()} (${freqRank})`}>
+                      {freqLabel}
+                    </span>
+                  )}
+                </div>
                 <div className="entry-strokes">
                   {[...entry.headword].map((char, i) => (
                     <StrokeOrder key={`${entry.id}-${char}-${i}`} character={char} />
