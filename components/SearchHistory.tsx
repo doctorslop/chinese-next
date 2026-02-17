@@ -7,6 +7,7 @@ const STORAGE_KEY = 'search-history';
 const MAX_HISTORY = 20;
 
 const listeners = new Set<() => void>();
+const SERVER_SNAPSHOT: string[] = [];
 let cachedSnapshot: string[] = [];
 let snapshotRaw = '';
 
@@ -66,6 +67,11 @@ export function clearSearchHistory(): void {
   }
 }
 
+// Eagerly initialize snapshot on the client so getSnapshot is side-effect free
+if (typeof window !== 'undefined') {
+  updateSnapshot();
+}
+
 function useSearchHistory(): string[] {
   const subscribe = useCallback((callback: () => void) => {
     listeners.add(callback);
@@ -74,11 +80,8 @@ function useSearchHistory(): string[] {
 
   return useSyncExternalStore(
     subscribe,
-    () => {
-      updateSnapshot();
-      return cachedSnapshot;
-    },
-    () => []
+    () => cachedSnapshot,
+    () => SERVER_SNAPSHOT
   );
 }
 

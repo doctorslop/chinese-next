@@ -22,14 +22,18 @@ export function StrokeOrder({ character }: StrokeOrderProps) {
     hasDataRef.current = true;
 
     try {
+      const styles = getComputedStyle(document.documentElement);
+      const resolveColor = (prop: string, fallback: string) =>
+        styles.getPropertyValue(prop).trim() || fallback;
+
       const writer = HanziWriter.create(el, character, {
         width: 120,
         height: 120,
         padding: 8,
         showOutline: true,
-        strokeColor: 'var(--fg, #111)',
-        outlineColor: 'var(--border, #e0e0e0)',
-        drawingColor: 'var(--muted, #6b6b6b)',
+        strokeColor: resolveColor('--fg', '#111'),
+        outlineColor: resolveColor('--border', '#e0e0e0'),
+        drawingColor: resolveColor('--muted', '#6b6b6b'),
         strokeAnimationSpeed: 1,
         delayBetweenStrokes: 200,
         charDataLoader: (char: string) => {
