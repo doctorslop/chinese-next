@@ -59,6 +59,7 @@ interface FormattedEntry {
   pinyin_display: string;
   syllables: [string, string][];
   definition: string;
+  frequency: number;
 }
 
 function formatEntry(entry: {
@@ -68,6 +69,7 @@ function formatEntry(entry: {
   pinyin: string;
   pinyin_display: string;
   definition: string;
+  frequency: number;
 }): FormattedEntry {
   return {
     id: entry.id,
@@ -78,6 +80,7 @@ function formatEntry(entry: {
     pinyin_display: entry.pinyin_display,
     syllables: extractPinyinSyllables(entry.pinyin),
     definition: entry.definition,
+    frequency: entry.frequency,
   };
 }
 
