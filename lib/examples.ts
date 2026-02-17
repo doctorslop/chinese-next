@@ -29,14 +29,16 @@ export function findCompoundWords(word: string, limit: number = 8): ExampleUsage
   const db = getDatabase();
 
   // Find entries that contain this word but are longer (compound words)
+  // Escape LIKE metacharacters to prevent pattern manipulation
+  const escapedWord = word.replace(/\\/g, '\\\\').replace(/%/g, '\\%').replace(/_/g, '\\_');
   const rows = db.prepare(`
     SELECT simplified, pinyin_display, definition
     FROM entries
-    WHERE (simplified LIKE ? OR traditional LIKE ?)
+    WHERE (simplified LIKE ? ESCAPE '\\' OR traditional LIKE ? ESCAPE '\\')
       AND simplified != ? AND traditional != ?
     ORDER BY frequency DESC, LENGTH(simplified)
     LIMIT ?
-  `).all(`%${word}%`, `%${word}%`, word, word, limit) as Pick<DictEntry, 'simplified' | 'pinyin_display' | 'definition'>[];
+  `).all(`%${escapedWord}%`, `%${escapedWord}%`, word, word, limit) as Pick<DictEntry, 'simplified' | 'pinyin_display' | 'definition'>[];
 
   return rows.map(row => ({
     word: row.simplified,

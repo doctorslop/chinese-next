@@ -17,7 +17,7 @@ interface FlashcardProps {
 
 export function Flashcard({ card, isFlipped, onFlip, onPlayAudio }: FlashcardProps) {
   return (
-    <div className="flashcard-wrapper" onClick={onFlip}>
+    <div className="flashcard-wrapper" onClick={onFlip} role="button" tabIndex={0} aria-label="Flip card" onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onFlip(); } }}>
       <div className={`flashcard ${isFlipped ? 'flipped' : ''}`}>
         <div className="flashcard-front">
           <span className="flashcard-chinese">{card.chinese}</span>

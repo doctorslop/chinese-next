@@ -6,6 +6,7 @@ import { search } from '@/lib/search';
 
 export const metadata: Metadata = {
   title: 'System Debug - Chinese Dictionary',
+  robots: { index: false, follow: false },
 };
 
 export const dynamic = 'force-dynamic';

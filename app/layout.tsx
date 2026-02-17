@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import Script from 'next/script';
 import Link from 'next/link';
 import ThemeToggle from '../components/ThemeToggle';
 import './globals.css';
@@ -54,7 +55,7 @@ export default function RootLayout({
           </div>
         </header>
         <main>{children}</main>
-        <script src="/audio.js" defer></script>
+        <Script src="/audio.js" strategy="afterInteractive" />
         <script dangerouslySetInnerHTML={{ __html: `if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js')})}` }} />
       </body>
     </html>

@@ -44,20 +44,19 @@ export function searchIdioms(query: string, limit: number = 50, offset: number =
 
   if (!query || !query.trim()) {
     // Return popular idioms (4-char entries with idiom/proverb tags or high frequency 4-char entries)
+    const idiomWhereClause = `LENGTH(simplified) = 4
+        AND (definition LIKE '%idiom%' OR definition LIKE '%proverb%' OR definition LIKE '%saying%'
+             OR frequency > 100)`;
+
     const countRow = db.prepare(`
       SELECT COUNT(*) as count FROM entries
-      WHERE LENGTH(simplified) = 4
-        AND (definition LIKE '%idiom%' OR definition LIKE '%proverb%' OR definition LIKE '%saying%'
-             OR definition LIKE '%CL:%' OR frequency > 0)
-        AND LENGTH(simplified) = 4
-    `).get() as { count: number };
-    total = countRow.count;
+      WHERE ${idiomWhereClause}
+    `).get() as { count: number } | undefined;
+    total = countRow?.count ?? 0;
 
     rows = db.prepare(`
       SELECT * FROM entries
-      WHERE LENGTH(simplified) = 4
-        AND (definition LIKE '%idiom%' OR definition LIKE '%proverb%' OR definition LIKE '%saying%'
-             OR frequency > 100)
+      WHERE ${idiomWhereClause}
       ORDER BY
         CASE WHEN definition LIKE '%idiom%' THEN 0
              WHEN definition LIKE '%proverb%' THEN 0
@@ -67,25 +66,28 @@ export function searchIdioms(query: string, limit: number = 50, offset: number =
       LIMIT ? OFFSET ?
     `).all(limit, offset) as DictEntry[];
   } else {
-    // Search idioms by query
+    // Search idioms by query — escape LIKE metacharacters
+    const escapedQuery = query.replace(/\\/g, '\\\\').replace(/%/g, '\\%').replace(/_/g, '\\_');
+    const likePattern = `%${escapedQuery}%`;
+
     const countRow = db.prepare(`
       SELECT COUNT(*) as count FROM entries
       WHERE LENGTH(simplified) >= 4
-        AND (simplified LIKE ? OR traditional LIKE ? OR definition LIKE ? OR pinyin_search LIKE ?)
-    `).get(`%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`) as { count: number };
-    total = countRow.count;
+        AND (simplified LIKE ? ESCAPE '\\' OR traditional LIKE ? ESCAPE '\\' OR definition LIKE ? ESCAPE '\\' OR pinyin_search LIKE ? ESCAPE '\\')
+    `).get(likePattern, likePattern, likePattern, likePattern) as { count: number } | undefined;
+    total = countRow?.count ?? 0;
 
     rows = db.prepare(`
       SELECT * FROM entries
       WHERE LENGTH(simplified) >= 4
-        AND (simplified LIKE ? OR traditional LIKE ? OR definition LIKE ? OR pinyin_search LIKE ?)
+        AND (simplified LIKE ? ESCAPE '\\' OR traditional LIKE ? ESCAPE '\\' OR definition LIKE ? ESCAPE '\\' OR pinyin_search LIKE ? ESCAPE '\\')
       ORDER BY
         CASE WHEN definition LIKE '%idiom%' THEN 0
              WHEN definition LIKE '%proverb%' THEN 0
              ELSE 1 END,
         frequency DESC, LENGTH(simplified)
       LIMIT ? OFFSET ?
-    `).all(`%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`, limit, offset) as DictEntry[];
+    `).all(likePattern, likePattern, likePattern, likePattern, limit, offset) as DictEntry[];
   }
 
   return {
