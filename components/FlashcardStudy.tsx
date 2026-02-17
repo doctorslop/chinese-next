@@ -53,7 +53,9 @@ export function FlashcardStudy({ level }: FlashcardStudyProps) {
       return;
     }
 
-    fetch(`/data/hsk${level}.json`)
+    const controller = new AbortController();
+
+    fetch(`/data/hsk${level}.json`, { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error('Failed to load vocabulary');
         return res.json() as Promise<HSKData>;
@@ -72,9 +74,12 @@ export function FlashcardStudy({ level }: FlashcardStudyProps) {
         setIsLoading(false);
       })
       .catch((err) => {
+        if (err.name === 'AbortError') return;
         setError(err.message);
         setIsLoading(false);
       });
+
+    return () => controller.abort();
   }, [level]);
 
   const goNext = useCallback(() => {
@@ -90,17 +95,17 @@ export function FlashcardStudy({ level }: FlashcardStudyProps) {
   }, [displayCards.length]);
 
   const toggleShuffle = useCallback(() => {
-    setIsShuffled((prev) => {
-      if (!prev) {
-        setDisplayCards(shuffleArray(cards));
-      } else {
-        setDisplayCards(cards);
-      }
-      setCurrentIndex(0);
-      setIsFlipped(false);
-      return !prev;
+    setIsShuffled((prev) => !prev);
+    setDisplayCards((prev) => {
+      // If currently in order (isShuffled is about to become true), shuffle
+      // If currently shuffled (isShuffled is about to become false), restore
+      return prev === cards ? shuffleArray(cards) : cards;
     });
+    setCurrentIndex(0);
+    setIsFlipped(false);
   }, [cards]);
+
+  const cancelledRef = useRef(false);
 
   const playAudio = useCallback(() => {
     if (displayCards.length === 0) return;
@@ -110,30 +115,48 @@ export function FlashcardStudy({ level }: FlashcardStudyProps) {
 
     if (audioRef.current) {
       audioRef.current.pause();
+      audioRef.current = null;
     }
+
+    // Track cancellation per invocation
+    cancelledRef.current = true;
+    const localCancelled = { value: false };
+    cancelledRef.current = false;
 
     // Play each syllable sequentially
     let index = 0;
     const playNext = () => {
-      if (index < urls.length) {
-        const audio = new Audio(urls[index]);
-        audioRef.current = audio;
-        audio.onended = () => {
-          index++;
-          setTimeout(playNext, 100);
-        };
-        audio.onerror = () => {
-          index++;
-          playNext();
-        };
-        audio.play().catch(() => {
-          index++;
-          playNext();
-        });
-      }
+      if (localCancelled.value || index >= urls.length) return;
+      const audio = new Audio(urls[index]);
+      audioRef.current = audio;
+      audio.onended = () => {
+        index++;
+        if (!localCancelled.value) setTimeout(playNext, 100);
+      };
+      audio.onerror = () => {
+        index++;
+        if (!localCancelled.value) playNext();
+      };
+      audio.play().catch(() => {
+        index++;
+        if (!localCancelled.value) playNext();
+      });
     };
     playNext();
+
+    // Allow cancellation from outside
+    return () => { localCancelled.value = true; };
   }, [displayCards, currentIndex]);
+
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   const flip = useCallback(() => {
     setIsFlipped((f) => !f);

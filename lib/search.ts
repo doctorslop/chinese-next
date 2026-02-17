@@ -11,7 +11,7 @@
 
 import { getDatabase, ensureInitialized, type DictEntry } from './db';
 import { normalizePinyinInput, isChinese, isPinyin } from './pinyin';
-import { MAX_TOKENS } from './constants';
+import { MAX_TOKENS, MAX_QUERY_LENGTH } from './constants';
 
 /**
  * Merge consecutive unfielded pinyin tokens into a single token.
@@ -203,26 +203,29 @@ function buildCondition(token: SearchToken): [string, (string | number)[]] {
 
     condition = `(${fieldConditions.join(' OR ')})`;
   } else if (phrase) {
-    // Exact phrase match - use LIKE with the phrase
+    // Exact phrase match - use LIKE with the phrase (escape metacharacters)
+    const escaped = term.replace(/%/g, '\\%').replace(/_/g, '\\_');
     const fieldConditions: string[] = [];
     for (const f of fields) {
       fieldConditions.push(`${f} LIKE ? ESCAPE '\\'`);
-      params.push(`%${term}%`);
+      params.push(`%${escaped}%`);
     }
     condition = `(${fieldConditions.join(' OR ')})`;
   } else {
-    // Regular term match
+    // Regular term match (escape metacharacters)
+    const escaped = term.replace(/%/g, '\\%').replace(/_/g, '\\_');
     const fieldConditions: string[] = [];
     for (const f of fields) {
       if (f === 'pinyin_search') {
         // Normalize pinyin for comparison (remove tones and spaces)
         const normalized = normalizePinyinInput(term).replace(/ /g, '');
+        const normalizedEscaped = normalized.replace(/%/g, '\\%').replace(/_/g, '\\_');
         // Use starts-with matching to avoid cross-syllable substring matches
         fieldConditions.push("pinyin_nospace LIKE ? ESCAPE '\\'");
-        params.push(`${normalized}%`);
+        params.push(`${normalizedEscaped}%`);
       } else {
         fieldConditions.push(`${f} LIKE ? ESCAPE '\\'`);
-        params.push(`%${term}%`);
+        params.push(`%${escaped}%`);
       }
     }
     condition = `(${fieldConditions.join(' OR ')})`;
@@ -250,6 +253,11 @@ export function search(
 
   if (!query || !query.trim()) {
     return { results: [] };
+  }
+
+  // Enforce max query length to prevent oversized SQL generation
+  if (query.length > MAX_QUERY_LENGTH) {
+    query = query.slice(0, MAX_QUERY_LENGTH);
   }
 
   ensureInitialized();
@@ -298,7 +306,7 @@ export function search(
 
   // Detect query type for smart ordering
   for (const token of includeTokens) {
-    if (!token.exclude) {
+    {
       const term = token.term.replace(/\*/g, '');
       if (token.field === 'pinyin' || isPinyin(term)) {
         // For pinyin: exact match first, then by frequency, then by length
@@ -315,8 +323,9 @@ export function search(
         orderClauses.push('LENGTH(traditional)');
       } else if (token.field === 'english') {
         // For English: entries starting with term first, then by frequency
-        orderClauses.push('CASE WHEN definition LIKE ? THEN 0 WHEN definition LIKE ? THEN 1 ELSE 2 END');
-        orderParams.push(`${term}%`, `% ${term}%`);
+        const escapedTerm = term.replace(/%/g, '\\%').replace(/_/g, '\\_');
+        orderClauses.push("CASE WHEN definition LIKE ? ESCAPE '\\' THEN 0 WHEN definition LIKE ? ESCAPE '\\' THEN 1 ELSE 2 END");
+        orderParams.push(`${escapedTerm}%`, `% ${escapedTerm}%`);
         orderClauses.push('frequency DESC');
         orderClauses.push('LENGTH(definition)');
       } else {
@@ -399,9 +408,10 @@ export function getSuggestions(query: string, limit: number = 8): string[] {
 
   // Strategy 1: Find words with similar prefix
   const prefix = query.length >= 3 ? query.slice(0, 3) : query;
+  const escapedPrefix = prefix.replace(/%/g, '\\%').replace(/_/g, '\\_');
   const rows = db
-    .prepare(`SELECT DISTINCT definition FROM entries WHERE definition LIKE ? LIMIT 100`)
-    .all(`%${prefix}%`) as { definition: string }[];
+    .prepare(`SELECT DISTINCT definition FROM entries WHERE definition LIKE ? ESCAPE '\\' LIMIT 100`)
+    .all(`%${escapedPrefix}%`) as { definition: string }[];
 
   for (const row of rows) {
     // Extract words from definition
@@ -420,9 +430,10 @@ export function getSuggestions(query: string, limit: number = 8): string[] {
     const variants = generateVariants(query);
     for (const variant of variants.slice(0, 10)) {
       if (suggestions.size >= limit) break;
+      const escapedVariant = variant.replace(/%/g, '\\%').replace(/_/g, '\\_');
       const variantRows = db
-        .prepare(`SELECT DISTINCT definition FROM entries WHERE definition LIKE ? LIMIT 3`)
-        .all(`% ${variant} %`) as { definition: string }[];
+        .prepare(`SELECT DISTINCT definition FROM entries WHERE definition LIKE ? ESCAPE '\\' LIMIT 3`)
+        .all(`% ${escapedVariant} %`) as { definition: string }[];
 
       for (const row of variantRows) {
         const words = row.definition.toLowerCase().match(/\b[a-zA-Z]{3,}\b/g) || [];
@@ -635,4 +646,9 @@ function getWordSet(db: ReturnType<typeof getDatabase>): Set<string> {
     }
   }
   return _wordSet;
+}
+
+/** Invalidate the cached word set (call after re-importing entries). */
+export function invalidateWordSetCache(): void {
+  _wordSet = null;
 }

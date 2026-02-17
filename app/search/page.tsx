@@ -1,9 +1,10 @@
 import { redirect } from 'next/navigation';
 import { Metadata } from 'next';
 import { search, getSuggestions, segmentChinese } from '@/lib/search';
-import { extractPinyinSyllables, isChinese } from '@/lib/pinyin';
+import { isChinese } from '@/lib/pinyin';
 import { RESULTS_PER_PAGE, MAX_QUERY_LENGTH, MAX_PAGE } from '@/lib/constants';
 import { findCompoundWords, getExampleSentences, type ExampleSentence, type ExampleUsage } from '@/lib/examples';
+import { formatEntry } from '@/lib/format';
 import { SearchForm } from '@/components/SearchForm';
 import { EntryList, type FormattedEntry } from '@/components/EntryList';
 import { Pagination } from '@/components/Pagination';
@@ -16,28 +17,6 @@ import type { SearchDebugInfo } from '@/lib/search';
 
 interface SearchPageProps {
   searchParams: Promise<{ q?: string; page?: string; debug?: string }>;
-}
-
-function formatEntry(entry: {
-  id: number;
-  traditional: string;
-  simplified: string;
-  pinyin: string;
-  pinyin_display: string;
-  definition: string;
-  frequency: number;
-}): FormattedEntry {
-  return {
-    id: entry.id,
-    headword: entry.simplified,
-    traditional: entry.traditional,
-    simplified: entry.simplified,
-    pinyin: entry.pinyin,
-    pinyin_display: entry.pinyin_display,
-    syllables: extractPinyinSyllables(entry.pinyin),
-    definition: entry.definition,
-    frequency: entry.frequency,
-  };
 }
 
 export async function generateMetadata({ searchParams }: SearchPageProps): Promise<Metadata> {

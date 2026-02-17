@@ -69,7 +69,7 @@ export function toneNumberToMark(syllable: string): string {
   const base = match[1];
   const tone = match[2] ? parseInt(match[2]) : 5;
 
-  if (tone === 5 || tone < 1) {
+  if (tone === 5) {
     return base;
   }
 

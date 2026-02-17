@@ -8,8 +8,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { search, getSuggestions, segmentChinese } from '@/lib/search';
-import { extractPinyinSyllables, isChinese } from '@/lib/pinyin';
+import { isChinese } from '@/lib/pinyin';
 import { RESULTS_PER_PAGE, MAX_QUERY_LENGTH, MAX_PAGE } from '@/lib/constants';
+import { formatEntry } from '@/lib/format';
+import type { FormattedEntry } from '@/components/EntryList';
 
 // Simple in-memory rate limiter: max requests per window per IP
 const RATE_LIMIT_WINDOW_MS = 60_000;
@@ -48,40 +50,6 @@ function isRateLimited(ip: string): boolean {
 const _cleanupInterval = setInterval(evictExpired, 2 * 60_000);
 if (typeof _cleanupInterval === 'object' && 'unref' in _cleanupInterval) {
   _cleanupInterval.unref();
-}
-
-interface FormattedEntry {
-  id: number;
-  headword: string;
-  traditional: string;
-  simplified: string;
-  pinyin: string;
-  pinyin_display: string;
-  syllables: [string, string][];
-  definition: string;
-  frequency: number;
-}
-
-function formatEntry(entry: {
-  id: number;
-  traditional: string;
-  simplified: string;
-  pinyin: string;
-  pinyin_display: string;
-  definition: string;
-  frequency: number;
-}): FormattedEntry {
-  return {
-    id: entry.id,
-    headword: entry.simplified,
-    traditional: entry.traditional,
-    simplified: entry.simplified,
-    pinyin: entry.pinyin,
-    pinyin_display: entry.pinyin_display,
-    syllables: extractPinyinSyllables(entry.pinyin),
-    definition: entry.definition,
-    frequency: entry.frequency,
-  };
 }
 
 export async function GET(request: NextRequest) {
