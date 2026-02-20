@@ -14,7 +14,7 @@ export default function HomePage() {
       <SearchHistory />
 
       <div className="examples">
-        <p className="examples-label">Try an example</p>
+        <p className="examples-label">Different ways to search</p>
         <div className="example-grid">
           {EXAMPLE_QUERIES.map(([query, description]) => (
             <Link
