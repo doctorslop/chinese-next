@@ -396,6 +396,7 @@ li {
 
 .search-input-wrap-small {
   flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
 }
@@ -2173,6 +2174,15 @@ li {
 }
 
 @media (max-width: 600px) {
+  .lookup-input-form {
+    flex-direction: column;
+  }
+
+  .lookup-submit {
+    width: 100%;
+    align-self: stretch;
+  }
+
   .lookup-textarea {
     font-size: 16px;
     min-height: 60px;
