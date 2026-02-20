@@ -6,7 +6,7 @@ import { SearchHistory } from '@/components/SearchHistory';
 export default function HomePage() {
   return (
     <div className="home-container">
-      <h1 className="site-title">Bun | Chinese Dictionary</h1>
+      <h1 className="site-title">Chinese Dictionary</h1>
       <p className="site-tagline">120,000+ entries, search in English, Pinyin, or Chinese</p>
 
       <SearchForm />
