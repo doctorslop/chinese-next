@@ -48,8 +48,6 @@ export default function RootLayout({
               <Link href="/idioms">Idioms</Link>
               <Link href="/lookup">Lookup</Link>
               <Link href="/hsk">HSK</Link>
-              <Link href="/help">Help</Link>
-              <Link href="/about">About</Link>
               <ThemeToggle />
             </nav>
           </div>

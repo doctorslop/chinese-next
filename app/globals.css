@@ -223,28 +223,23 @@ li {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 52px 0 32px;
-}
-
-.site-logo {
-  width: 48px;
-  height: 48px;
-  margin-bottom: 16px;
-  opacity: 0.9;
+  padding: 56px 0 32px;
 }
 
 .site-title {
-  font-size: 30px;
+  font-size: 36px;
   font-weight: 700;
-  letter-spacing: -0.03em;
-  margin-bottom: 6px;
+  letter-spacing: -0.04em;
+  margin-bottom: 8px;
+  line-height: 1.1;
 }
 
 .site-tagline {
   font-size: 14px;
   color: var(--muted);
-  margin-bottom: 28px;
+  margin-bottom: 32px;
   font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 .examples {
@@ -381,7 +376,6 @@ li {
   align-items: center;
   width: 100%;
   max-width: 540px;
-  gap: 8px;
 }
 
 .search-form-small {
@@ -392,10 +386,10 @@ li {
   margin-bottom: 16px;
 }
 
-/* Hero search: input wrapper with leading icon */
+/* Hero search: input wrapper contains the icon + input + inline button */
 .search-input-wrap {
   position: relative;
-  flex: 1;
+  width: 100%;
   display: flex;
   align-items: center;
 }
@@ -408,10 +402,11 @@ li {
 
 .search-input-icon {
   position: absolute;
-  left: 14px;
+  left: 16px;
   color: var(--muted);
   pointer-events: none;
   flex-shrink: 0;
+  z-index: 1;
 }
 
 .search-input {
@@ -441,14 +436,14 @@ li {
   color: var(--muted);
 }
 
-/* Hero input: pill shape, taller, with leading icon padding */
+/* Hero input: pill shape, taller, with leading icon + right button padding */
 .search-input-hero {
-  height: 52px;
-  padding: 0 14px 0 44px;
+  height: 54px;
+  padding: 0 56px 0 44px;
   font-size: 16px;
   border-radius: 100px;
   border-color: var(--border-strong);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
 .search-input-hero:focus {
@@ -457,7 +452,7 @@ li {
 }
 
 [data-theme="dark"] .search-input-hero {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .search-button {
@@ -478,7 +473,7 @@ li {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  transition: opacity 0.15s;
+  transition: opacity 0.15s, background 0.15s;
 }
 
 .search-button:hover {
@@ -494,13 +489,16 @@ li {
   outline-offset: 2px;
 }
 
-/* Hero search button: circle icon button */
+/* Hero search button: circle icon, absolute inside the pill input */
 .search-button-hero {
-  width: 52px;
-  height: 52px;
+  position: absolute;
+  right: 7px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   padding: 0;
   flex-shrink: 0;
+  z-index: 1;
 }
 
 /* Compact search button: text */
@@ -656,13 +654,18 @@ li {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  gap: 3px;
+  height: 20px;
+  padding: 0 6px;
   border: none;
   background: none;
   color: var(--muted);
   cursor: pointer;
   border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  font-family: inherit;
+  letter-spacing: 0.02em;
   transition: color 0.15s, background 0.15s;
 }
 
@@ -1124,15 +1127,16 @@ li {
 /* Tablet */
 @media (max-width: 768px) {
   .home-container {
-    padding: 40px 0 24px;
+    padding: 44px 0 24px;
   }
 
   .site-title {
-    margin-bottom: 4px;
+    font-size: 30px;
+    margin-bottom: 6px;
   }
 
   .site-tagline {
-    margin-bottom: 24px;
+    margin-bottom: 26px;
   }
 
   .examples {
@@ -1199,23 +1203,17 @@ li {
   }
 
   .home-container {
-    padding: 28px 0 16px;
-  }
-
-  .site-logo {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 10px;
+    padding: 36px 0 16px;
   }
 
   .site-title {
-    font-size: 24px;
-    margin-bottom: 4px;
+    font-size: 28px;
+    margin-bottom: 6px;
   }
 
   .site-tagline {
     font-size: 13px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
   /* Search form: consistent sizing */
@@ -1232,11 +1230,13 @@ li {
   .search-input-hero {
     height: 50px;
     font-size: 16px;
+    padding: 0 52px 0 42px;
   }
 
   .search-button-hero {
-    width: 50px;
-    height: 50px;
+    width: 36px;
+    height: 36px;
+    right: 7px;
   }
 
   .search-button-compact {
@@ -1334,14 +1334,10 @@ li {
   }
 
   .stroke-order-btn {
-    width: 20px;
-    height: 20px;
-    margin-bottom: 2px;
-  }
-
-  .stroke-order-btn svg {
-    width: 12px;
-    height: 12px;
+    height: 18px;
+    padding: 0 4px;
+    font-size: 9px;
+    margin-bottom: 1px;
   }
 
   .search-history {
@@ -1506,11 +1502,13 @@ li {
   .search-input-hero {
     height: 46px;
     font-size: 15px;
+    padding: 0 50px 0 40px;
   }
 
   .search-button-hero {
-    width: 46px;
-    height: 46px;
+    width: 34px;
+    height: 34px;
+    right: 6px;
   }
 
   .stroke-order-canvas svg {
