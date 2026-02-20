@@ -53,9 +53,6 @@ export function EntryList({ results }: EntryListProps) {
                   )}
                   {freqLabel && (
                     <span className={`freq-tag freq-${freqRank}`} title={`Frequency: ${entry.frequency.toLocaleString()} (${freqRank?.replace('-', ' ')})`}>
-                      <span className="freq-bars" aria-hidden="true">
-                        <span /><span /><span /><span />
-                      </span>
                       {freqLabel}
                     </span>
                   )}

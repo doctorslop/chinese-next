@@ -711,10 +711,9 @@ li {
 .freq-tag {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
   font-size: 10px;
   font-weight: 600;
-  padding: 2px 7px 2px 5px;
+  padding: 2px 6px;
   border-radius: 100px;
   background: var(--subtle);
   border: 1px solid var(--border);
@@ -724,35 +723,6 @@ li {
   vertical-align: middle;
   white-space: nowrap;
 }
-
-/* Signal bars visual indicator */
-.freq-bars {
-  display: inline-flex;
-  align-items: flex-end;
-  gap: 1.5px;
-  height: 9px;
-}
-
-.freq-bars span {
-  display: block;
-  width: 3px;
-  border-radius: 1px;
-  background: currentColor;
-  opacity: 0.25;
-}
-
-.freq-bars span:nth-child(1) { height: 3px; }
-.freq-bars span:nth-child(2) { height: 5px; }
-.freq-bars span:nth-child(3) { height: 7px; }
-.freq-bars span:nth-child(4) { height: 9px; }
-
-.freq-tag.freq-very-common .freq-bars span { opacity: 1; }
-.freq-tag.freq-common .freq-bars span:nth-child(1),
-.freq-tag.freq-common .freq-bars span:nth-child(2),
-.freq-tag.freq-common .freq-bars span:nth-child(3) { opacity: 1; }
-.freq-tag.freq-moderate .freq-bars span:nth-child(1),
-.freq-tag.freq-moderate .freq-bars span:nth-child(2) { opacity: 1; }
-.freq-tag.freq-uncommon .freq-bars span:nth-child(1) { opacity: 1; }
 
 .freq-tag.freq-very-common {
   background: #f0fdf4;
