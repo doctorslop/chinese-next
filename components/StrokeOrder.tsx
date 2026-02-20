@@ -61,6 +61,9 @@ export function StrokeOrder({ character }: StrokeOrderProps) {
             });
         },
       });
+      // Add viewBox so CSS display-size overrides scale the character
+      // instead of clipping it (HanziWriter omits viewBox by default)
+      el.querySelector('svg')?.setAttribute('viewBox', '0 0 80 80');
       writerRef.current = writer;
     } catch {
       el.style.display = 'none';
