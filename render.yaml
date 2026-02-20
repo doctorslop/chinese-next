@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: chinese-dictionary
+    runtime: node
+    # Build installs all deps (including devDeps for tsx), imports the
+    # dictionary into SQLite, then builds the Next.js app.
+    buildCommand: npm install --include=dev && npm run import && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
