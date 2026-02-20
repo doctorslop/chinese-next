@@ -35,8 +35,8 @@ export default async function IdiomsPage({ searchParams }: IdiomsPageProps) {
 
   return (
     <div className="results-container">
-      <h1>Idioms <span className="idiom-zh-title">成语</span></h1>
-      <p className="idiom-subtitle">Browse Chinese idioms with character-by-character breakdowns</p>
+      <h1>Chinese Idioms</h1>
+      <p className="idiom-subtitle">Browse chengyu (成语) with character-by-character breakdowns</p>
 
       <form action="/idioms" method="get" className="search-form-small">
         <input
@@ -119,12 +119,15 @@ export default async function IdiomsPage({ searchParams }: IdiomsPageProps) {
           )}
         </>
       ) : (
-        <p className="no-results">No idioms found{query ? ` for "${query}"` : ''}.</p>
+        <div className="no-results-container">
+          <div className="no-results-char">空</div>
+          <p className="no-results">No idioms found{query ? ` for "${query}"` : ''}.</p>
+          <p style={{ fontSize: '13px', color: 'var(--muted)', opacity: 0.7 }}>
+            Try a broader search, or browse all idioms by clearing your query.
+          </p>
+        </div>
       )}
 
-      <div className="back-link">
-        <Link href="/">Home</Link>
-      </div>
     </div>
   );
 }

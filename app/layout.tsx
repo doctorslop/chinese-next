@@ -39,10 +39,10 @@ export default function RootLayout({
         <header className="site-header">
           <div className="header-inner">
             <Link href="/" className="header-logo">
-              <svg width="24" height="24" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path d="M496.898,219.081C455.176,128.09,338.844,109.334,311.415,84.319c-11.584-10.58-23.31-19.091-36.122-23.544 c-0.254,1.511-0.436,3.023-0.436,4.585c0,3.561,0.669,7.314,2.069,11.301c1.4,3.976,3.52,8.166,6.33,12.456 c5.62,8.572,13.978,17.488,24.041,25.928c20.126,16.941,46.956,32.086,71.272,41.793c5.386,2.151,8.013,8.258,5.863,13.644 c-2.171,5.387-8.278,8.004-13.654,5.853c-17.266-6.908-35.372-16.128-52.13-26.962c-16.748-10.844-32.126-23.23-43.872-36.792 c-7.812-9.048-14.03-18.655-17.652-28.961c-2.078-5.894-3.276-12.01-3.266-18.259c-0.01-2.637,0.234-5.285,0.669-7.933 c-3.681,0.081-7.282,0.487-10.782,1.207c-0.721,5.144-1.126,10.489-1.126,16.038c0,17.944,3.783,37.614,10.479,56.563 c6.684,18.959,16.25,37.198,27.5,52.353c3.459,4.676,2.475,11.24-2.171,14.699c-4.666,3.448-11.239,2.475-14.688-2.192 c-12.639-17.031-23.067-36.984-30.442-57.87c-7.01-19.882-11.188-40.587-11.594-60.53c-6.36,7.872-12.112,15.916-17.052,24.062 c-14.577,23.94-22.55,48.58-22.53,71.282c0,1.228,0.021,2.445,0.072,3.652c0.213,5.792-4.301,10.671-10.094,10.884 c-5.792,0.224-10.671-4.3-10.894-10.092c-0.051-1.471-0.081-2.952-0.081-4.444c0.02-26.456,8.764-53.378,23.615-78.859 c-42.29,22.114-137.065,48.894-170.277,124.902c-35.99,82.431-6.045,174.183,103.874,214.789 c36.641,13.522,82.227,20.703,137.35,20.703c55.112,0,100.709-7.182,137.349-20.703 C502.944,393.264,534.38,300.842,496.898,219.081z"/>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
               </svg>
-              <span>Bun</span>
+              <span>Chinese Dictionary</span>
             </Link>
             <nav className="header-nav">
               <Link href="/idioms">Idioms</Link>
@@ -53,6 +53,18 @@ export default function RootLayout({
           </div>
         </header>
         <main>{children}</main>
+        <footer className="site-footer">
+          <div className="footer-inner">
+            <nav className="footer-nav">
+              <Link href="/about">About</Link>
+              <Link href="/help">Help</Link>
+              <Link href="/idioms">Idioms</Link>
+              <Link href="/lookup">Lookup</Link>
+              <Link href="/hsk">HSK</Link>
+            </nav>
+            <p className="footer-credit">CC-CEDICT · Open-source Chinese-English dictionary</p>
+          </div>
+        </footer>
         <Script src="/audio.js" strategy="afterInteractive" />
         <script dangerouslySetInnerHTML={{ __html: `if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js')})}` }} />
       </body>

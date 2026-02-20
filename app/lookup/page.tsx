@@ -45,7 +45,10 @@ export default async function LookupPage({ searchParams }: LookupPageProps) {
   return (
     <div className="lookup-container">
       <h1>Word-by-Word Lookup</h1>
-      <p className="lookup-subtitle">Paste Chinese text to see each word annotated with pinyin and English</p>
+      <p className="lookup-subtitle">
+        Paste a sentence or paragraph of Chinese text to break it down word by word with pinyin and English translations.
+        Unlike <a href="/">search</a>, which finds dictionary entries for a single term, lookup analyzes entire passages.
+      </p>
 
       <form action="/lookup" method="get">
         <div className="lookup-input-form">
@@ -102,9 +105,6 @@ export default async function LookupPage({ searchParams }: LookupPageProps) {
         <p className="no-results">No Chinese text detected. Please enter Chinese characters.</p>
       )}
 
-      <div className="back-link">
-        <Link href="/">Home</Link>
-      </div>
     </div>
   );
 }
