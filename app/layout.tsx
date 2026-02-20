@@ -62,7 +62,7 @@ export default function RootLayout({
               <Link href="/lookup">Lookup</Link>
               <Link href="/hsk">HSK</Link>
             </nav>
-            <p className="footer-credit">CC-CEDICT · Open-source Chinese-English dictionary</p>
+            <p className="footer-credit">Bun is in beta and comes with no guarantees</p>
           </div>
         </footer>
         <Script src="/audio.js" strategy="afterInteractive" />
