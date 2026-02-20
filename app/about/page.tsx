@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
 import { getEntryCount, ensureInitialized } from '@/lib/db';
 
 export const metadata: Metadata = {
@@ -49,9 +48,6 @@ export default function AboutPage() {
         Chinese-English dictionary project maintained by the community.
       </p>
 
-      <div className="back-link">
-        <Link href="/">Home</Link>
-      </div>
     </div>
   );
 }

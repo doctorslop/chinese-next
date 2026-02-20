@@ -121,16 +121,27 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       ) : segmentedResults ? (
         <SegmentedResults query={query} segments={segmentedResults} />
       ) : !errorMessage ? (
-        <p className="no-results">No results found for &quot;{query}&quot;</p>
+        <div className="no-results-container">
+          <div className="no-results-char">找</div>
+          <p className="no-results">No results found for &quot;{query}&quot;</p>
+          <div className="no-results-tips">
+            <p className="no-results-tip-label">Try:</p>
+            <ul>
+              <li>Checking the spelling or pinyin tones</li>
+              <li>Using wildcards: <Link href={`/search?q=${encodeURIComponent(query + '*')}`}><code>{query}*</code></Link></li>
+              <li>Searching in a different language (English, Pinyin, or Chinese)</li>
+              <li><Link href="/help">View search syntax help</Link></li>
+            </ul>
+          </div>
+          <div className="no-results-funfact">
+            Did you know? There are over 50,000 Chinese characters, but only about 3,000 are needed for daily reading.
+          </div>
+        </div>
       ) : null}
 
       {debugInfo && (
         <StatsPanel debugInfo={debugInfo} resultCount={totalResults} page={page} />
       )}
-
-      <div className="back-link">
-        <Link href="/">Home</Link>
-      </div>
     </div>
   );
 }
