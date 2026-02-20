@@ -27,7 +27,7 @@ function formatFrequency(freq: number): string | null {
 
 function getFrequencyRank(freq: number): string | null {
   if (freq <= 0) return null;
-  if (freq >= 100_000) return 'very common';
+  if (freq >= 100_000) return 'very-common';
   if (freq >= 10_000) return 'common';
   if (freq >= 1_000) return 'moderate';
   return 'uncommon';
@@ -52,7 +52,10 @@ export function EntryList({ results }: EntryListProps) {
                     <span className="entry-traditional">{entry.traditional}</span>
                   )}
                   {freqLabel && (
-                    <span className={`freq-tag freq-${freqRank?.replace(' ', '-')}`} title={`Frequency: ${entry.frequency.toLocaleString()} (${freqRank})`}>
+                    <span className={`freq-tag freq-${freqRank}`} title={`Frequency: ${entry.frequency.toLocaleString()} (${freqRank?.replace('-', ' ')})`}>
+                      <span className="freq-bars" aria-hidden="true">
+                        <span /><span /><span /><span />
+                      </span>
                       {freqLabel}
                     </span>
                   )}
