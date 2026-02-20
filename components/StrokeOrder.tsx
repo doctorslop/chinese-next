@@ -28,9 +28,9 @@ export function StrokeOrder({ character }: StrokeOrderProps) {
         styles.getPropertyValue(prop).trim() || fallback;
 
       const writer = HanziWriter.create(el, character, {
-        width: 120,
-        height: 120,
-        padding: 8,
+        width: 80,
+        height: 80,
+        padding: 6,
         showOutline: true,
         strokeColor: resolveColor('--fg', '#111'),
         outlineColor: resolveColor('--border', '#e0e0e0'),
