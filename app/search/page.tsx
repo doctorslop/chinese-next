@@ -100,9 +100,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     <div className="results-container">
       <SearchForm defaultValue={query} compact />
 
-      <p className="search-heading">
-        Results for <strong>{query}</strong>
-      </p>
+      <div className="search-heading">
+        <span className="search-heading-label">Results for</span>
+        <strong className="search-heading-query">{query}</strong>
+      </div>
 
       {errorMessage && (
         <div className="flash error">{errorMessage}</div>
