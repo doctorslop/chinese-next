@@ -34,22 +34,26 @@ export default async function IdiomsPage({ searchParams }: IdiomsPageProps) {
   const hasPrev = page > 1;
 
   return (
-    <div className="results-container">
-      <h1>Chinese Idioms</h1>
-      <p className="idiom-subtitle">Browse chengyu (成语) with character-by-character breakdowns</p>
+    <div className="page-container">
+      <div className="page-header">
+        <h1 className="page-title">Chinese Idioms</h1>
+        <p className="page-description">Browse chengyu (成语) with character-by-character breakdowns</p>
+      </div>
 
       <form action="/idioms" method="get" className="search-form-small">
-        <input
-          type="text"
-          name="q"
-          className="search-input"
-          placeholder="Search idioms..."
-          defaultValue={query}
-          autoComplete="off"
-          autoCapitalize="off"
-          spellCheck={false}
-        />
-        <button type="submit" className="search-button">Search</button>
+        <div className="search-input-wrap-small">
+          <input
+            type="text"
+            name="q"
+            className="search-input"
+            placeholder="Search idioms..."
+            defaultValue={query}
+            autoComplete="off"
+            autoCapitalize="off"
+            spellCheck={false}
+          />
+        </div>
+        <button type="submit" className="search-button search-button-compact">Search</button>
       </form>
 
       {breakdown && (
@@ -122,12 +126,11 @@ export default async function IdiomsPage({ searchParams }: IdiomsPageProps) {
         <div className="no-results-container">
           <div className="no-results-char">空</div>
           <p className="no-results">No idioms found{query ? ` for "${query}"` : ''}.</p>
-          <p style={{ fontSize: '13px', color: 'var(--muted)', opacity: 0.7 }}>
+          <p className="no-results-hint">
             Try a broader search, or browse all idioms by clearing your query.
           </p>
         </div>
       )}
-
     </div>
   );
 }

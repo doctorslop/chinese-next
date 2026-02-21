@@ -42,41 +42,34 @@ export function EntryList({ results }: EntryListProps) {
         const freqLabel = formatFrequency(entry.frequency);
         const freqRank = getFrequencyRank(entry.frequency);
         return (
-          <div key={entry.id} className="entry">
-            <div className="entry-field">
-              <div className="entry-label">Hanzi</div>
-              <div className="entry-value hanzi">
-                <div className="hanzi-header">
-                  <span>{entry.headword}</span>
-                  {entry.traditional !== entry.simplified && (
-                    <span className="entry-traditional">{entry.traditional}</span>
-                  )}
-                  {freqLabel && (
-                    <span className={`freq-tag freq-${freqRank}`} title={`Frequency: ${entry.frequency.toLocaleString()} (${freqRank?.replace('-', ' ')})`}>
-                      {freqLabel}
-                    </span>
-                  )}
-                </div>
-                <div className="entry-strokes">
-                  {[...entry.headword].map((char, i) => (
-                    <StrokeOrder key={`${entry.id}-${char}-${i}`} character={char} />
-                  ))}
-                </div>
+          <div key={entry.id} className="entry-card">
+            <div className="entry-card-header">
+              <div className="entry-card-hanzi">
+                <span className="entry-card-headword">{entry.headword}</span>
+                {entry.traditional !== entry.simplified && (
+                  <span className="entry-card-trad">{entry.traditional}</span>
+                )}
+                {freqLabel && (
+                  <span className={`freq-tag freq-${freqRank}`} title={`Frequency: ${entry.frequency.toLocaleString()} (${freqRank?.replace('-', ' ')})`}>
+                    {freqLabel}
+                  </span>
+                )}
               </div>
-            </div>
-            <div className="entry-field">
-              <div className="entry-label">Pinyin</div>
-              <div className="entry-value pinyin">
+              <div className="entry-card-pinyin">
                 {entry.syllables.map(([pinyinNum, pinyinDisplay], i) => (
                   <AudioLink key={i} pinyinNum={pinyinNum} pinyinDisplay={pinyinDisplay} />
                 ))}
               </div>
             </div>
-            <div className="entry-field">
-              <div className="entry-label">English</div>
-              <div className="entry-value definition">
+            <div className="entry-card-body">
+              <div className="entry-card-definition">
                 <ChineseLink text={entry.definition} />
               </div>
+            </div>
+            <div className="entry-card-strokes">
+              {[...entry.headword].map((char, i) => (
+                <StrokeOrder key={`${entry.id}-${char}-${i}`} character={char} />
+              ))}
             </div>
           </div>
         );

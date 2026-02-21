@@ -43,12 +43,13 @@ export default async function LookupPage({ searchParams }: LookupPageProps) {
   }
 
   return (
-    <div className="lookup-container">
-      <h1>Word-by-Word Lookup</h1>
-      <p className="lookup-subtitle">
-        Paste a sentence or paragraph of Chinese text to break it down word by word with pinyin and English translations.
-        Unlike <a href="/">search</a>, which finds dictionary entries for a single term, lookup analyzes entire passages.
-      </p>
+    <div className="page-container">
+      <div className="page-header">
+        <h1 className="page-title">Word-by-Word Lookup</h1>
+        <p className="page-description">
+          Paste a sentence or paragraph of Chinese text to break it down word by word with pinyin and English translations.
+        </p>
+      </div>
 
       <form action="/lookup" method="get">
         <div className="lookup-input-form">
@@ -81,7 +82,7 @@ export default async function LookupPage({ searchParams }: LookupPageProps) {
 
           <div className="lookup-results">
             {segments.map((seg, i) => (
-              <div key={i} className="lookup-word-entry">
+              <div key={i} className={`lookup-word-card${seg.found ? '' : ' lookup-word-card-unknown'}`}>
                 {seg.found ? (
                   <>
                     <Link href={`/search?q=${encodeURIComponent(seg.word)}`} className="lookup-word-zh">{seg.word}</Link>
@@ -102,9 +103,11 @@ export default async function LookupPage({ searchParams }: LookupPageProps) {
       )}
 
       {text && segments.length === 0 && (
-        <p className="no-results">No Chinese text detected. Please enter Chinese characters.</p>
+        <div className="no-results-container">
+          <div className="no-results-char">字</div>
+          <p className="no-results">No Chinese text detected. Please enter Chinese characters.</p>
+        </div>
       )}
-
     </div>
   );
 }

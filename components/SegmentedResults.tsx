@@ -20,34 +20,31 @@ export function SegmentedResults({ query, segments }: SegmentedResultsProps) {
           <div key={segIndex} className="breakdown-segment">
             {segment.entries.length > 0 ? (
               segment.entries.map((entry) => (
-                <div key={entry.id} className="entry">
-                  <div className="entry-field">
-                    <div className="entry-label">Hanzi</div>
-                    <div className="entry-value hanzi">{entry.headword}</div>
-                  </div>
-                  <div className="entry-field">
-                    <div className="entry-label">Pinyin</div>
-                    <div className="entry-value pinyin">
+                <div key={entry.id} className="entry-card">
+                  <div className="entry-card-header">
+                    <div className="entry-card-hanzi">
+                      <span className="entry-card-headword">{entry.headword}</span>
+                    </div>
+                    <div className="entry-card-pinyin">
                       {entry.syllables.map(([pinyinNum, pinyinDisplay], i) => (
                         <AudioLink key={i} pinyinNum={pinyinNum} pinyinDisplay={pinyinDisplay} />
                       ))}
                     </div>
                   </div>
-                  <div className="entry-field">
-                    <div className="entry-label">English</div>
-                    <div className="entry-value definition">{entry.definition}</div>
+                  <div className="entry-card-body">
+                    <div className="entry-card-definition">{entry.definition}</div>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="entry entry-not-found">
-                <div className="entry-field">
-                  <div className="entry-label">Hanzi</div>
-                  <div className="entry-value hanzi">{segment.word}</div>
+              <div className="entry-card entry-card-notfound">
+                <div className="entry-card-header">
+                  <div className="entry-card-hanzi">
+                    <span className="entry-card-headword">{segment.word}</span>
+                  </div>
                 </div>
-                <div className="entry-field">
-                  <div className="entry-label">English</div>
-                  <div className="entry-value definition">(not found in dictionary)</div>
+                <div className="entry-card-body">
+                  <div className="entry-card-definition entry-card-definition-muted">(not found in dictionary)</div>
                 </div>
               </div>
             )}
