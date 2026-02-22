@@ -37,7 +37,9 @@ export default async function IdiomsPage({ searchParams }: IdiomsPageProps) {
     <div className="page-container">
       <div className="page-header">
         <h1 className="page-title">Chinese Idioms</h1>
-        <p className="page-description">Browse chengyu (成语) with character-by-character breakdowns</p>
+        <p className="page-description">
+          Browse and search {total.toLocaleString()} chengyu (成语) with character-by-character breakdowns. Click any idiom to see how each character contributes to the meaning.
+        </p>
       </div>
 
       <form action="/idioms" method="get" className="search-form-small">

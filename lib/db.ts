@@ -48,6 +48,18 @@ export function initDatabase(): void {
     )
   `);
 
+  // Example sentences table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS example_sentences (
+      id INTEGER PRIMARY KEY,
+      simplified TEXT NOT NULL,
+      traditional TEXT NOT NULL,
+      pinyin TEXT NOT NULL,
+      english TEXT NOT NULL
+    )
+  `);
+  db.exec('CREATE INDEX IF NOT EXISTS idx_examples_simplified ON example_sentences(simplified)');
+
   // Create indexes for faster lookups
   db.exec('CREATE INDEX IF NOT EXISTS idx_traditional ON entries(traditional)');
   db.exec('CREATE INDEX IF NOT EXISTS idx_simplified ON entries(simplified)');
@@ -203,6 +215,58 @@ export function importEntries(
   }
 
   console.log(`Import complete: ${count} entries total`);
+  return count;
+}
+
+/**
+ * Get the total number of example sentences.
+ */
+export function getExampleSentenceCount(): number {
+  const db = getDatabase();
+  try {
+    const row = db.prepare('SELECT COUNT(*) as count FROM example_sentences').get() as { count: number } | undefined;
+    return row?.count ?? 0;
+  } catch {
+    return 0;
+  }
+}
+
+/**
+ * Import example sentences from TSV data.
+ */
+export function importExampleSentences(
+  rows: Array<{ id: number; simplified: string; traditional: string; pinyin: string; english: string }>,
+  batchSize: number = 10000,
+): number {
+  const db = getDatabase();
+
+  db.exec('DELETE FROM example_sentences');
+
+  const insert = db.prepare(
+    'INSERT INTO example_sentences (id, simplified, traditional, pinyin, english) VALUES (?, ?, ?, ?, ?)'
+  );
+
+  let count = 0;
+  const insertBatch = db.transaction((batch: typeof rows) => {
+    for (const row of batch) {
+      insert.run(row.id, row.simplified, row.traditional, row.pinyin, row.english);
+    }
+  });
+
+  let batch: typeof rows = [];
+  for (const row of rows) {
+    batch.push(row);
+    if (batch.length >= batchSize) {
+      insertBatch(batch);
+      count += batch.length;
+      batch = [];
+    }
+  }
+  if (batch.length > 0) {
+    insertBatch(batch);
+    count += batch.length;
+  }
+
   return count;
 }
 

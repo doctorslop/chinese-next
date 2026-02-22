@@ -19,6 +19,7 @@ export function ExampleSentences({ word, sentences, compounds }: ExampleSentence
           {sentences.map((s, i) => (
             <div key={i} className="example-sentence">
               <div className="example-zh"><ChineseLink text={s.chinese} /></div>
+              {s.pinyin && <div className="example-py">{s.pinyin}</div>}
               <div className="example-en">{s.english}</div>
             </div>
           ))}
