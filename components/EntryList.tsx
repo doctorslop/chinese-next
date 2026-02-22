@@ -18,19 +18,12 @@ interface EntryListProps {
   results: FormattedEntry[];
 }
 
-function formatFrequency(freq: number): string | null {
+function getFrequencyInfo(freq: number): { label: string; rank: string; tooltip: string } | null {
   if (freq <= 0) return null;
-  if (freq >= 1_000_000) return `${(freq / 1_000_000).toFixed(1)}M`;
-  if (freq >= 1_000) return `${(freq / 1_000).toFixed(1)}k`;
-  return freq.toString();
-}
-
-function getFrequencyRank(freq: number): string | null {
-  if (freq <= 0) return null;
-  if (freq >= 100_000) return 'very-common';
-  if (freq >= 10_000) return 'common';
-  if (freq >= 1_000) return 'moderate';
-  return 'uncommon';
+  if (freq >= 100_000) return { label: 'Very Common', rank: 'very-common', tooltip: `Top-tier vocabulary (${freq.toLocaleString()} occurrences)` };
+  if (freq >= 10_000) return { label: 'Common', rank: 'common', tooltip: `Frequently used (${freq.toLocaleString()} occurrences)` };
+  if (freq >= 1_000) return { label: 'Moderate', rank: 'moderate', tooltip: `Moderately used (${freq.toLocaleString()} occurrences)` };
+  return { label: 'Uncommon', rank: 'uncommon', tooltip: `Less frequently used (${freq.toLocaleString()} occurrences)` };
 }
 
 export function EntryList({ results }: EntryListProps) {
@@ -39,8 +32,7 @@ export function EntryList({ results }: EntryListProps) {
   return (
     <div className="results-list">
       {results.map((entry) => {
-        const freqLabel = formatFrequency(entry.frequency);
-        const freqRank = getFrequencyRank(entry.frequency);
+        const freqInfo = getFrequencyInfo(entry.frequency);
         return (
           <div key={entry.id} className="entry-card">
             <div className="entry-card-header">
@@ -48,11 +40,6 @@ export function EntryList({ results }: EntryListProps) {
                 <span className="entry-card-headword">{entry.headword}</span>
                 {entry.traditional !== entry.simplified && (
                   <span className="entry-card-trad">{entry.traditional}</span>
-                )}
-                {freqLabel && (
-                  <span className={`freq-tag freq-${freqRank}`} title={`Frequency: ${entry.frequency.toLocaleString()} (${freqRank?.replace('-', ' ')})`}>
-                    {freqLabel}
-                  </span>
                 )}
               </div>
               <div className="entry-card-pinyin">
@@ -65,6 +52,12 @@ export function EntryList({ results }: EntryListProps) {
               <div className="entry-card-definition">
                 <ChineseLink text={entry.definition} />
               </div>
+              {freqInfo && (
+                <span className={`freq-tag freq-${freqInfo.rank}`} title={freqInfo.tooltip}>
+                  <span className="freq-dot" />
+                  {freqInfo.label}
+                </span>
+              )}
             </div>
             <div className="entry-card-strokes">
               {[...entry.headword].map((char, i) => (
