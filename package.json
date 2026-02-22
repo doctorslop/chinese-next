@@ -10,7 +10,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "import": "tsx scripts/import-cedict.ts"
+    "import": "tsx scripts/import-cedict.ts",
+    "import:examples": "tsx scripts/import-examples.ts",
+    "import:all": "tsx scripts/import-cedict.ts && tsx scripts/import-examples.ts"
   },
   "dependencies": {
     "better-sqlite3": "^11.0.0",
