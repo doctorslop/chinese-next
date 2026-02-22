@@ -329,9 +329,24 @@ export function search(
         orderClauses.push('frequency DESC');
         orderClauses.push('LENGTH(definition)');
       } else {
-        // Auto-detected: prioritize by frequency, then shorter entries
+        // Auto-detected English: rank by definition relevance
+        // CEDICT defs use " / " separator, e.g. "individual / personal / oneself"
+        // Tier 0: term is a standalone sense (word boundary both sides)
+        // Tier 1: term at a word boundary (after space)
+        // Tier 2: substring match (e.g. "personality" for "personal")
+        const escapedTerm = term.replace(/%/g, '\\%').replace(/_/g, '\\_');
+        orderClauses.push(
+          "CASE" +
+          " WHEN definition LIKE ? ESCAPE '\\' OR definition LIKE ? ESCAPE '\\' OR definition = ? THEN 0" +
+          " WHEN definition LIKE ? ESCAPE '\\' OR definition LIKE ? ESCAPE '\\' THEN 1" +
+          " ELSE 2 END"
+        );
+        orderParams.push(
+          `% / ${escapedTerm} / %`, `% / ${escapedTerm}`, escapedTerm,
+          `% ${escapedTerm} %`, `${escapedTerm} %`,
+        );
         orderClauses.push('frequency DESC');
-        orderClauses.push('LENGTH(traditional)');
+        orderClauses.push('LENGTH(definition)');
       }
       break; // Only use first include token for ordering
     }

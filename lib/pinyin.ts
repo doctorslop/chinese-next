@@ -186,19 +186,81 @@ export function getAudioFilename(syllableWithNumber: string): string {
   return `${syllable}.mp3`;
 }
 
+// All valid pinyin syllables (without tones)
+const PINYIN_SYLLABLES = new Set([
+  'a','o','e','ai','ei','ao','ou','an','en','ang','eng','er',
+  'ba','bo','bi','bu','bai','bei','bao','ban','ben','bang','beng','bie','biao','bian','bin','bing',
+  'pa','po','pi','pu','pai','pei','pao','pou','pan','pen','pang','peng','pie','piao','pian','pin','ping',
+  'ma','mo','me','mi','mu','mai','mei','mao','mou','man','men','mang','meng','mie','miao','miu','mian','min','ming',
+  'fa','fo','fu','fei','fou','fan','fen','fang','feng',
+  'da','de','di','du','dai','dei','dao','dou','dan','den','dang','deng','die','diao','diu','dian','ding','dong','duan','dui','dun','duo',
+  'ta','te','ti','tu','tai','tao','tou','tan','tang','teng','tie','tiao','tian','ting','tong','tuan','tui','tun','tuo',
+  'na','ne','ni','nu','nv','nai','nei','nao','nou','nan','nen','nang','neng','nie','niao','niu','nian','nin','niang','ning','nong','nuan','nuo','nve',
+  'la','le','li','lu','lv','lai','lei','lao','lou','lan','lang','leng','lie','liao','liu','lian','lin','liang','ling','long','luan','lun','luo','lve',
+  'ga','ge','gu','gai','gei','gao','gou','gan','gen','gang','geng','gong','gua','guai','guan','guang','gui','gun','guo',
+  'ka','ke','ku','kai','kei','kao','kou','kan','ken','kang','keng','kong','kua','kuai','kuan','kuang','kui','kun','kuo',
+  'ha','he','hu','hai','hei','hao','hou','han','hen','hang','heng','hong','hua','huai','huan','huang','hui','hun','huo',
+  'ji','ju','jia','jie','jiao','jiu','jian','jin','jiang','jing','jiong','juan','jue','jun',
+  'qi','qu','qia','qie','qiao','qiu','qian','qin','qiang','qing','qiong','quan','que','qun',
+  'xi','xu','xia','xie','xiao','xiu','xian','xin','xiang','xing','xiong','xuan','xue','xun',
+  'zha','zhe','zhi','zhu','zhai','zhao','zhou','zhan','zhen','zhang','zheng','zhong','zhua','zhuai','zhuan','zhuang','zhui','zhun','zhuo',
+  'cha','che','chi','chu','chai','chao','chou','chan','chen','chang','cheng','chong','chuai','chuan','chuang','chui','chun','chuo',
+  'sha','she','shi','shu','shai','shao','shou','shan','shen','shang','sheng','shua','shuai','shuan','shuang','shui','shun','shuo',
+  're','ri','ru','rao','rou','ran','ren','rang','reng','rong','rua','ruan','rui','run','ruo',
+  'za','ze','zi','zu','zai','zei','zao','zou','zan','zen','zang','zeng','zong','zuan','zui','zun','zuo',
+  'ca','ce','ci','cu','cai','cao','cou','can','cen','cang','ceng','cong','cuan','cui','cun','cuo',
+  'sa','se','si','su','sai','sao','sou','san','sen','sang','seng','song','suan','sui','sun','suo',
+  'ya','yo','ye','yu','yai','yao','you','yan','yang','ying','yong','yuan','yue','yun',
+  'wa','wo','wu','wai','wei','wan','wen','wang','weng',
+]);
+
+/**
+ * Try to decompose a string into valid pinyin syllables using greedy longest-match.
+ * Returns true only if the entire string can be consumed.
+ */
+function canDecomposeAsPinyin(s: string): boolean {
+  let i = 0;
+  while (i < s.length) {
+    let matched = false;
+    // Try longest syllable first (max 6 chars: zhuang)
+    for (let len = Math.min(6, s.length - i); len >= 1; len--) {
+      if (PINYIN_SYLLABLES.has(s.slice(i, i + len))) {
+        i += len;
+        matched = true;
+        break;
+      }
+    }
+    if (!matched) return false;
+  }
+  return true;
+}
+
 /**
  * Check if text looks like pinyin input.
+ * Validates that text can be decomposed into real pinyin syllables,
+ * not just any ASCII string. Handles tone numbers, tone marks, and spaces.
  */
 export function isPinyin(text: string): boolean {
+  if (!text || !text.trim()) return false;
+
   let t = text.toLowerCase().replace(/v/g, 'ü');
   // Remove tone numbers
   t = t.replace(/[1-5]/g, '');
-  // Remove tone marks
-  for (const mark of Object.keys(TONE_MARK_TO_NUMBER)) {
-    t = t.split(mark).join('a');
+  // Replace tone marks with their base vowels (ā→a, é→e, etc.)
+  for (const [mark, [vowel]] of Object.entries(TONE_MARK_TO_NUMBER)) {
+    // Skip plain ASCII vowels — they're already correct
+    if (/^[a-z]$/.test(mark)) continue;
+    t = t.split(mark).join(vowel);
   }
-  // Check if remaining is all ASCII letters
-  return /^[a-z\s]+$/.test(t) && t.length > 0;
+  // Convert ü to v for matching against syllable set
+  t = t.replace(/ü/g, 'v');
+
+  // Must be all ASCII letters and spaces
+  if (!/^[a-z\s]+$/.test(t)) return false;
+
+  // Check each space-separated chunk decomposes into valid pinyin syllables
+  const chunks = t.split(/\s+/).filter(Boolean);
+  return chunks.length > 0 && chunks.every(canDecomposeAsPinyin);
 }
 
 /**
