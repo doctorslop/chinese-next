@@ -6,6 +6,7 @@
  */
 
 import Database from 'better-sqlite3';
+import fs from 'fs';
 import path from 'path';
 
 const DATABASE_PATH = path.join(process.cwd(), 'dictionary.db');
@@ -270,11 +271,63 @@ export function importExampleSentences(
   return count;
 }
 
+/**
+ * Auto-import example sentences from TSV if the table exists but is empty.
+ * This ensures deployments that only run `next build` still get example data.
+ */
+function autoImportExampleSentences(): void {
+  const tsvPath = path.join(process.cwd(), 'data', 'example_sentences.tsv');
+  if (!fs.existsSync(tsvPath)) return;
+
+  const db = getDatabase();
+  const row = db.prepare('SELECT COUNT(*) as c FROM example_sentences').get() as { c: number } | undefined;
+  if ((row?.c ?? 0) > 0) return;
+
+  console.log('[db] Auto-importing example sentences from TSV...');
+  const content = fs.readFileSync(tsvPath, 'utf-8');
+  const lines = content.split('\n');
+
+  const insert = db.prepare(
+    'INSERT INTO example_sentences (id, simplified, traditional, pinyin, english) VALUES (?, ?, ?, ?, ?)'
+  );
+
+  let count = 0;
+  const batch: Array<[number, string, string, string, string]> = [];
+
+  const insertBatch = db.transaction((rows: typeof batch) => {
+    for (const row of rows) {
+      insert.run(...row);
+    }
+  });
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    const parts = trimmed.split('\t');
+    if (parts.length < 5) continue;
+    const id = parseInt(parts[0], 10);
+    if (isNaN(id)) continue;
+    batch.push([id, parts[1], parts[2], parts[3], parts[4]]);
+    if (batch.length >= 10000) {
+      insertBatch(batch);
+      count += batch.length;
+      batch.length = 0;
+    }
+  }
+  if (batch.length > 0) {
+    insertBatch(batch);
+    count += batch.length;
+  }
+
+  console.log(`[db] Auto-imported ${count} example sentences.`);
+}
+
 // Ensure database is initialized on first use
 let _initialized = false;
 export function ensureInitialized(): void {
   if (!_initialized) {
     initDatabase();
+    autoImportExampleSentences();
     _initialized = true;
   }
 }
